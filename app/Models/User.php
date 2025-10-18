@@ -26,6 +26,7 @@ class User extends Authenticatable
         'status',
         'requested_role',
         'registration_date',
+        'requested_email',
     ];
 
     /**

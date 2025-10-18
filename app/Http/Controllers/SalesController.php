@@ -52,4 +52,10 @@ class SalesController extends Controller
 
         return redirect()->route('sales.input-penawaran.create')->with('success', 'Quotation submitted successfully!');
     }
+
+    public function quotations()
+    {
+        $quotations = Quotation::where('created_by', auth()->id())->latest()->get();
+        return view('sales.daftar-penawaran', compact('quotations'));
+    }
 }

@@ -43,17 +43,19 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'requested_role' => $request->requested_role,
-            'status' => 'approved',
+            'status' => 'pending',
             'registration_date' => now(),
         ]);
 
-        // Assign the requested role directly
-        $user->assignRole($request->requested_role);
+        // Do not assign role yet - wait for admin approval
 
         event(new Registered($user));
 
         // Auto-login the user
         Auth::login($user);
+
+        // Regenerate session to prevent session fixation
+        $request->session()->regenerate();
 
         // Redirect to dashboard based on role
         return redirect(route('dashboard', absolute: false));

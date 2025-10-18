@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard')</title>
+    <title>@yield('title', 'Teknisi Dashboard')</title>
     @vite('resources/css/tabler.css')
 </head>
 <body>
@@ -29,71 +29,11 @@
                         </button>
                     </div>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open notifications">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/>
-                                <path d="M9 17v1a3 3 0 0 0 6 0v-1"/>
-                            </svg>
-                            <span class="badge bg-red badge-blink position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">3</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <div class="dropdown-header">Notifications</div>
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm text-green" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <circle cx="12" cy="12" r="9"/>
-                                            <path d="M9 12l2 2l4 -4"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="text-muted small">2 hours ago</div>
-                                        <div>User John Doe role changed to Admin</div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm text-blue" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <circle cx="12" cy="12" r="9"/>
-                                            <path d="M9 12l2 2l4 -4"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="text-muted small">5 hours ago</div>
-                                        <div>New user Jane Smith registered</div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm text-orange" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <circle cx="12" cy="12" r="9"/>
-                                            <path d="M9 12l2 2l4 -4"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="text-muted small">1 day ago</div>
-                                        <div>User approval pending for Mike Johnson</div>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-item text-center">View all notifications</a>
-                        </div>
-                    </div>
-                    <div class="nav-item dropdown">
                         <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
                             <span class="avatar avatar-sm" style="background-image: url(https://preview.tabler.io/static/avatars/000m.jpg)"></span>
                             <div class="d-none d-xl-block ps-2">
                                 <div>{{ auth()->user()->name }}</div>
-                                <div class="mt-1 small text-muted">Admin</div>
+                                <div class="mt-1 small text-muted">Teknisi</div>
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -114,20 +54,12 @@
                 <div class="navbar navbar-light">
                     <div class="container-xl">
                         <ul class="navbar-nav">
-                            <li class="nav-item {{ request()->is('admin/dashboard') ? 'active' : '' }}">
-                                <a class="nav-link" href="/admin/dashboard">
+                            <li class="nav-item {{ request()->is('teknisi/dashboard') ? 'active' : '' }}">
+                                <a class="nav-link" href="/teknisi/dashboard">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
                                     </span>
                                     <span class="nav-link-title">Home</span>
-                                </a>
-                            </li>
-                            <li class="nav-item {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('admin.users.index') }}">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="9" cy="7" r="4" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 11l2 2l4 -4" /></svg>
-                                    </span>
-                                    <span class="nav-link-title">Manage Users</span>
                                 </a>
                             </li>
                         </ul>

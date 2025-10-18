@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Dashboard</title>
+    <title>Daftar Penawaran - Sales Dashboard</title>
     @vite('resources/css/tabler.css')
 </head>
 <body>
@@ -28,8 +28,7 @@
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <a href="{{ route('profile.edit') }}" class="dropdown-item">Profile</a>
-                            <a href="{{ route('profile.edit') }}" class="dropdown-item">Settings</a>
+                            <a href="#" class="dropdown-item">Profile</a>
                             <div class="dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -45,7 +44,7 @@
                 <div class="navbar navbar-light">
                     <div class="container-xl">
                         <ul class="navbar-nav">
-                            <li class="nav-item active">
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('sales.dashboard') }}">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
@@ -61,7 +60,7 @@
                                     <span class="nav-link-title">Input Penawaran</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item active">
                                 <a class="nav-link" href="{{ route('sales.daftar-penawaran') }}">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="16" height="16" rx="2" /><line x1="4" y1="10" x2="20" y2="10" /><line x1="10" y1="4" x2="10" y2="20" /></svg>
@@ -81,10 +80,50 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Hallo {{ auth()->user()->name }} 👨‍💼</h3>
+                                    <h3 class="card-title">Daftar Penawaran</h3>
                                 </div>
                                 <div class="card-body">
-                                    <p>Berhasil masuk dashboard sales.</p>
+                                    @if($quotations->isEmpty())
+                                        <div class="text-center py-4">
+                                            <p class="text-muted">Belum ada penawaran yang dibuat.</p>
+                                            <a href="{{ route('sales.input-penawaran.create') }}" class="btn btn-primary">Buat Penawaran Baru</a>
+                                        </div>
+                                    @else
+                                        <div class="table-responsive">
+                                            <table class="table table-vcenter">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Tanggal</th>
+                                                        <th>Sales Person</th>
+                                                        <th>Jenis Penawaran</th>
+                                                        <th>Nama Customer</th>
+                                                        <th>Nama Alat</th>
+                                                        <th>Part Number</th>
+                                                        <th>Harga</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($quotations as $index => $quotation)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ $quotation->created_at->format('d/m/Y H:i') }}</td>
+                                                        <td>{{ $quotation->sales_person }}</td>
+                                                        <td>{{ $quotation->jenis_penawaran }}</td>
+                                                        <td>{{ $quotation->nama_customer }}</td>
+                                                        <td>{{ $quotation->nama_alat }}</td>
+                                                        <td>{{ $quotation->part_number }}</td>
+                                                        <td>Rp {{ number_format($quotation->harga, 0, ',', '.') }}</td>
+                                                        <td>
+                                                            <span class="badge bg-success">Submitted</span>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

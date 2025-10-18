@@ -61,4 +61,26 @@ class UserManagementController extends Controller
         $user->syncRoles([]);
         return redirect()->back()->with('success', 'Role removed successfully!');
     }
+
+    public function approveEmailChange(Request $request, User $user)
+    {
+        if ($user->requested_email) {
+            $user->email = $user->requested_email;
+            $user->requested_email = null;
+            $user->email_verified_at = null; // Reset verification
+            $user->save();
+
+            return redirect()->back()->with('success', 'Email change approved successfully.');
+        }
+
+        return redirect()->back()->with('error', 'No email change request found.');
+    }
+
+    public function rejectEmailChange(Request $request, User $user)
+    {
+        $user->requested_email = null;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Email change request rejected.');
+    }
 }

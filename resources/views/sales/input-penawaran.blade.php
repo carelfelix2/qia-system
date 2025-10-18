@@ -52,12 +52,20 @@
                                     <span class="nav-link-title">Home</span>
                                 </a>
                             </li>
-                            <li class="nav-item active">
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('sales.input-penawaran.create') }}">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><line x1="9" y1="9" x2="10" y2="9" /><line x1="9" y1="13" x2="15" y2="13" /><line x1="9" y1="17" x2="15" y2="17" /></svg>
                                     </span>
                                     <span class="nav-link-title">Input Penawaran</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('sales.daftar-penawaran') }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="16" height="16" rx="2" /><line x1="4" y1="10" x2="20" y2="10" /><line x1="10" y1="4" x2="10" y2="20" /></svg>
+                                    </span>
+                                    <span class="nav-link-title">Daftar Penawaran</span>
                                 </a>
                             </li>
                         </ul>
@@ -93,13 +101,7 @@
                                         @csrf
                                         <div class="mb-3">
                                             <label class="form-label">Sales</label>
-                                            <select name="sales_person" class="form-select" required>
-                                                <option value="">Pilih Sales</option>
-                                                <option value="Daniel Sudarso P. S." {{ old('sales_person') == 'Daniel Sudarso P. S.' ? 'selected' : '' }}>Daniel Sudarso P. S.</option>
-                                                <option value="Ricky Y S" {{ old('sales_person') == 'Ricky Y S' ? 'selected' : '' }}>Ricky Y S</option>
-                                                <option value="Dian Isna F." {{ old('sales_person') == 'Dian Isna F.' ? 'selected' : '' }}>Dian Isna F.</option>
-                                                <option value="Rahmat Hidayat" {{ old('sales_person') == 'Rahmat Hidayat' ? 'selected' : '' }}>Rahmat Hidayat</option>
-                                            </select>
+                                            <input type="text" name="sales_person" class="form-control" value="{{ auth()->user()->name }}" readonly required>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Jenis penawaran</label>

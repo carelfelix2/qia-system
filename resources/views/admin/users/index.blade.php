@@ -28,6 +28,7 @@
                                 <th>Tanggal</th>
                                 <th>Nama</th>
                                 <th>Email</th>
+                                <th>Requested Email</th>
                                 <th>Role yang Diminta</th>
                                 <th>Status</th>
                                 <th>Role Saat Ini</th>
@@ -45,6 +46,21 @@
                                 </td>
                                 <td class="text-secondary">
                                     {{ $user->email }}
+                                </td>
+                                <td>
+                                    @if($user->requested_email)
+                                        <span class="badge bg-warning">{{ $user->requested_email }}</span>
+                                        <form method="POST" action="{{ route('admin.users.approve-email-change', $user) }}" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                        </form>
+                                        <form method="POST" action="{{ route('admin.users.reject-email-change', $user) }}" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                        </form>
+                                    @else
+                                        -
+                                    @endif
                                 </td>
                                 <td>
                                     @if($user->requested_role)

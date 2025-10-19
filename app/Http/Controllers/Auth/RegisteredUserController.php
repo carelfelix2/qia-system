@@ -49,6 +49,15 @@ class RegisteredUserController extends Controller
 
         // Do not assign role yet - wait for admin approval
 
+        // Notify all admin users about new registration
+        $admins = User::whereHas('roles', function($query) {
+            $query->where('name', 'admin');
+        })->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new \App\Notifications\NewUserRegistrationNotification($user));
+        }
+
         event(new Registered($user));
 
         // Auto-login the user

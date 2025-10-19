@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,9 +31,18 @@ class ProfileController extends Controller
 
         $user->fill($request->only(['name']));
 
-        if ($request->email !== $user->email) {
+        if ($request->filled('email') && $request->email !== $user->email) {
             // Store requested email for admin approval
             $user->requested_email = $request->email;
+
+            // Notify all admin users about email change request
+            $admins = User::whereHas('roles', function($query) {
+                $query->where('name', 'admin');
+            })->get();
+
+            foreach ($admins as $admin) {
+                $admin->notify(new \App\Notifications\EmailChangeRequestNotification($user, $request->email));
+            }
         }
 
         $user->save();

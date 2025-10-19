@@ -3,6 +3,21 @@
 @section('title', 'User Management')
 
 @section('content')
+@if(request('user'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Scroll to the specific user row
+            const userRow = document.querySelector('tr[data-user-id="{{ request("user") }}"]');
+            if (userRow) {
+                userRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                userRow.style.backgroundColor = '#fff3cd'; // Highlight the row
+                setTimeout(() => {
+                    userRow.style.backgroundColor = '';
+                }, 3000);
+            }
+        });
+    </script>
+@endif
 <div class="row row-deck row-cards">
     <div class="col-12">
         <div class="card">
@@ -37,7 +52,7 @@
                         </thead>
                         <tbody>
                             @foreach($users as $user)
-                            <tr>
+                            <tr data-user-id="{{ $user->id }}" @if(request('user') == $user->id) class="table-warning" @endif>
                                 <td>
                                     {{ $user->registration_date ? $user->registration_date->format('d/m/Y H:i') : '-' }}
                                 </td>

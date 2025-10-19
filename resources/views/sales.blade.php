@@ -19,6 +19,41 @@
                     </a>
                 </h1>
                 <div class="navbar-nav flex-row order-md-last">
+                    <div class="nav-item">
+                        <button id="dark-mode-toggle" class="nav-link d-flex lh-1 text-reset p-0" aria-label="Toggle dark mode">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <circle cx="12" cy="12" r="4"/>
+                                <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -6.4l.7 .7m12.1 -.7l.7 .7m0 -11.4l-.7 .7m-12.1 -.7l-.7 .7"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open notifications" id="notification-toggle">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/>
+                                <path d="M9 17v1a3 3 0 0 0 6 0v-1"/>
+                            </svg>
+                            <span class="badge bg-red badge-blink position-absolute top-0 start-100 translate-middle" id="notification-badge" style="font-size: 0.6rem; display: none;">0</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="notification-dropdown">
+                            <div class="dropdown-header d-flex justify-content-between align-items-center">
+                                <span>Notifications</span>
+                                <button class="btn btn-sm btn-outline-primary" id="mark-all-read-btn" style="display: none;">Mark All Read</button>
+                            </div>
+                            <div id="notification-list">
+                                <div class="dropdown-item text-center text-muted">
+                                    <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    Loading notifications...
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ route('profile.edit') }}" class="dropdown-item text-center">View All</a>
+                        </div>
+                    </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
                             <span class="avatar avatar-sm" style="background-image: url(https://preview.tabler.io/static/avatars/000m.jpg)"></span>
@@ -105,5 +140,171 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const htmlElement = document.documentElement;
+
+            // Function to toggle dark mode
+            function toggleDarkMode() {
+                const currentTheme = htmlElement.getAttribute('data-bs-theme');
+                if (currentTheme === 'dark') {
+                    htmlElement.removeAttribute('data-bs-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    htmlElement.setAttribute('data-bs-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                htmlElement.setAttribute('data-bs-theme', 'dark');
+            }
+
+            // Add click event to toggle button
+            darkModeToggle.addEventListener('click', toggleDarkMode);
+
+            // Notification functionality
+            let notifications = [];
+            let unreadCount = 0;
+
+            function loadNotifications() {
+                fetch('/notifications', {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    notifications = data.notifications;
+                    unreadCount = data.unread_count;
+                    updateNotificationUI();
+                })
+                .catch(error => {
+                    console.error('Error loading notifications:', error);
+                    document.getElementById('notification-list').innerHTML = '<div class="dropdown-item text-center text-muted">Failed to load notifications</div>';
+                });
+            }
+
+            function updateNotificationUI() {
+                const badge = document.getElementById('notification-badge');
+                const list = document.getElementById('notification-list');
+                const markAllBtn = document.getElementById('mark-all-read-btn');
+
+                // Update badge
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+
+                // Update list
+                if (notifications.length === 0) {
+                    list.innerHTML = '<div class="dropdown-item text-center text-muted">No notifications</div>';
+                    markAllBtn.style.display = 'none';
+                } else {
+                    let html = '';
+                    notifications.forEach(notification => {
+                        const iconClass = notification.read_at ? 'text-muted' : 'text-blue';
+                        const itemClass = notification.read_at ? '' : 'fw-bold';
+                        const actionUrl = notification.action_url || '#';
+                        html += `
+                            <a href="${actionUrl}" class="dropdown-item notification-item ${itemClass}" data-id="${notification.id}">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm ${iconClass}" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <circle cx="12" cy="12" r="9"/>
+                                            <path d="M9 12l2 2l4 -4"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small">${notification.time_ago}</div>
+                                        <div>${notification.message}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                    });
+                    list.innerHTML = html;
+                    markAllBtn.style.display = unreadCount > 0 ? 'block' : 'none';
+
+                    // Add click handlers for individual notifications
+                    document.querySelectorAll('.notification-item').forEach(item => {
+                        item.addEventListener('click', function(e) {
+                            const id = this.getAttribute('data-id');
+                            const href = this.getAttribute('href');
+                            if (href && href !== '#') {
+                                // If there's an action URL, mark as read and allow navigation
+                                markAsRead(id);
+                                // Navigation will happen naturally
+                            } else {
+                                // No action URL, just mark as read
+                                e.preventDefault();
+                                markAsRead(id);
+                            }
+                        });
+                    });
+                }
+            }
+
+            function markAsRead(id) {
+                fetch(`/notifications/${id}/read`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadNotifications(); // Reload notifications
+                    }
+                })
+                .catch(error => console.error('Error marking notification as read:', error));
+            }
+
+            function markAllAsRead() {
+                fetch('/notifications/mark-all-read', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadNotifications(); // Reload notifications
+                    }
+                })
+                .catch(error => console.error('Error marking all notifications as read:', error));
+            }
+
+            // Load notifications on page load
+            loadNotifications();
+
+            // Refresh notifications every 30 seconds
+            setInterval(loadNotifications, 30000);
+
+            // Mark all as read button
+            document.getElementById('mark-all-read-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                markAllAsRead();
+            });
+        });
+    </script>
 </body>
 </html>

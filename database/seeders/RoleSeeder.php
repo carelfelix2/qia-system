@@ -15,5 +15,6 @@ class RoleSeeder extends Seeder
         $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin']);
         $salesRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'sales']);
         $teknisiRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'teknisi']);
+        $inputerSapRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'inputer_sap']);
     }
 }

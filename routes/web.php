@@ -18,6 +18,8 @@ Route::get('/dashboard', function () {
             return redirect('/sales/dashboard');
         } elseif ($user->hasRole('teknisi')) {
             return redirect('/teknisi/dashboard');
+        } elseif ($user->hasRole('inputer_sap')) {
+            return redirect('/sap/dashboard');
         }
     }
 
@@ -38,6 +40,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/users/{user}/remove-role', [App\Http\Controllers\UserManagementController::class, 'removeRole'])->name('admin.users.remove-role');
     Route::post('/admin/users/{user}/approve-email-change', [App\Http\Controllers\UserManagementController::class, 'approveEmailChange'])->name('admin.users.approve-email-change');
     Route::post('/admin/users/{user}/reject-email-change', [App\Http\Controllers\UserManagementController::class, 'rejectEmailChange'])->name('admin.users.reject-email-change');
+
+    // Equipment management routes
+    Route::get('/admin/equipment', [App\Http\Controllers\EquipmentController::class, 'index'])->name('admin.equipment.index');
+    Route::post('/admin/equipment/import', [App\Http\Controllers\EquipmentController::class, 'import'])->name('admin.equipment.import');
 });
 
 Route::middleware(['auth', 'role:sales'])->group(function () {
@@ -45,12 +51,25 @@ Route::middleware(['auth', 'role:sales'])->group(function () {
     Route::get('/sales/input-penawaran', [App\Http\Controllers\SalesController::class, 'create'])->name('sales.input-penawaran.create');
     Route::post('/sales/input-penawaran', [App\Http\Controllers\SalesController::class, 'store'])->name('sales.input-penawaran.store');
     Route::get('/sales/daftar-penawaran', [App\Http\Controllers\SalesController::class, 'quotations'])->name('sales.daftar-penawaran');
+    Route::put('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'update'])->name('sales.quotation.update');
 });
 
 Route::middleware(['auth', 'role:teknisi'])->group(function () {
     Route::get('/teknisi/dashboard', function () {
         return view('teknisi');
     });
+});
+
+Route::middleware(['auth', 'role:inputer_sap'])->group(function () {
+    Route::get('/sap/dashboard', [App\Http\Controllers\SapController::class, 'index'])->name('sap.dashboard');
+    Route::get('/sap/daftar-penawaran', [App\Http\Controllers\SapController::class, 'quotations'])->name('sap.daftar-penawaran');
+    Route::post('/sap/quotation/{quotation}/update-sap', [App\Http\Controllers\SapController::class, 'updateSapNumber'])->name('sap.update-sap-number');
+});
+
+// Purchase Orders routes - accessible by admin and inputer_sap
+Route::middleware(['auth'])->group(function () {
+    Route::resource('purchase-orders', App\Http\Controllers\PurchaseOrderController::class)->except(['edit', 'destroy']);
+    Route::post('/purchase-orders/{purchaseOrder}/approve', [App\Http\Controllers\PurchaseOrderController::class, 'approve'])->name('purchase-orders.approve');
 });
 
 // Profile routes for all authenticated users
@@ -63,6 +82,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+
+    // Equipment search for sales
+    Route::get('/api/equipment/search', [App\Http\Controllers\EquipmentController::class, 'search'])->name('equipment.search');
 });
 
 require __DIR__.'/auth.php';

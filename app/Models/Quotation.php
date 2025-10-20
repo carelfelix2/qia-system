@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quotation extends Model
 {
@@ -13,27 +14,38 @@ class Quotation extends Model
         'format_layout',
         'nama_customer',
         'alamat_customer',
-        'nama_alat',
-        'part_number',
-        'kategori_harga',
-        'harga',
-        'ppn',
-        'diskon',
         'pembayaran',
         'pembayaran_other',
         'stok',
         'stok_other',
         'keterangan_tambahan',
         'created_by',
+        'status',
+        'sap_number',
+        'attachment_file',
     ];
 
     protected $casts = [
-        'harga' => 'decimal:2',
-        'diskon' => 'decimal:2',
+        //
     ];
 
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function quotationItems(): HasMany
+    {
+        return $this->hasMany(QuotationItem::class);
+    }
+
+    public function revisions(): HasMany
+    {
+        return $this->hasMany(QuotationRevision::class);
+    }
+
+    public function purchaseOrder(): HasOne
+    {
+        return $this->hasOne(PurchaseOrder::class);
     }
 }

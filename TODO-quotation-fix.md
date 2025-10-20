@@ -1,0 +1,4 @@
+- [x] Create migration to drop item fields from quotations table
+- [x] Update Quotation model to remove casts for removed fields
+- [x] Run migration to apply schema changes
+- [x] Test quotation creation to ensure no errors

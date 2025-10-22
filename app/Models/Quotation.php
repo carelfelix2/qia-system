@@ -14,6 +14,7 @@ class Quotation extends Model
         'format_layout',
         'nama_customer',
         'alamat_customer',
+        'diskon',
         'pembayaran',
         'pembayaran_other',
         'stok',

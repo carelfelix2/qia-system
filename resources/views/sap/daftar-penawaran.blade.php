@@ -116,7 +116,7 @@
                                                                         <td>{{ $item->part_number }}</td>
                                                                         <td>{{ $item->kategori_harga }}</td>
                                                                         <td>Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                                                                        <td>{{ $item->diskon }}</td>
+                                                                        <td>{{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}</td>
                                                                         <td>{{ $item->ppn }}</td>
                                                                     </tr>
                                                                     @endforeach

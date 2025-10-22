@@ -14,14 +14,16 @@ class QuotationUpdatedNotification extends Notification implements ShouldQueue
 
     protected $quotation;
     protected $changes;
+    protected $updaterRole;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Quotation $quotation, array $changes = [])
+    public function __construct(Quotation $quotation, array $changes = [], string $updaterRole = 'sales')
     {
         $this->quotation = $quotation;
         $this->changes = $changes;
+        $this->updaterRole = $updaterRole;
     }
 
     /**
@@ -41,13 +43,15 @@ class QuotationUpdatedNotification extends Notification implements ShouldQueue
     {
         $changesText = !empty($this->changes) ? 'Perubahan: ' . implode(', ', $this->changes) : 'Ada perubahan pada penawaran';
 
+        $updaterText = $this->updaterRole === 'sap' ? 'Inputer SAP' : 'Sales';
+
         return (new MailMessage)
             ->subject('Penawaran Diperbarui')
-            ->line('Penawaran telah diperbarui oleh sales.')
+            ->line('Penawaran telah diperbarui oleh ' . $updaterText . '.')
             ->line('Customer: ' . $this->quotation->nama_customer)
             ->line('Sales: ' . $this->quotation->sales_person)
             ->line($changesText)
-            ->action('Lihat Penawaran', route('sap.daftar-penawaran'))
+            ->action('Lihat Penawaran', $this->updaterRole === 'sap' ? route('sales.daftar-penawaran') : route('sap.daftar-penawaran'))
             ->line('Silakan periksa perubahan pada penawaran ini.');
     }
 
@@ -58,10 +62,12 @@ class QuotationUpdatedNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        $updaterText = $this->updaterRole === 'sap' ? 'Inputer SAP' : 'Sales';
+
         return [
             'type' => 'quotation_updated',
-            'message' => 'Penawaran diperbarui untuk customer ' . $this->quotation->nama_customer . ' oleh ' . $this->quotation->sales_person,
-            'action_url' => route('sap.daftar-penawaran'),
+            'message' => 'Penawaran diperbarui untuk customer ' . $this->quotation->nama_customer . ' oleh ' . $updaterText,
+            'action_url' => $this->updaterRole === 'sap' ? route('sales.daftar-penawaran') : route('sap.daftar-penawaran'),
             'quotation_id' => $this->quotation->id,
             'changes' => $this->changes,
         ];

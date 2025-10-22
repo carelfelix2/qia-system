@@ -42,6 +42,9 @@ class SapController extends Controller
             'attachment_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
         ]);
 
+        // Store old data for change detection
+        $oldData = $quotation->only(['sap_number', 'status', 'attachment_file']);
+
         // Handle file upload
         if ($request->hasFile('attachment_file')) {
             // Delete old file if exists
@@ -58,6 +61,29 @@ class SapController extends Controller
 
         $quotation->update($validated);
 
+        // Detect changes and notify sales if there are updates
+        $changes = $this->detectSapChanges($oldData, $quotation->fresh()->only(['sap_number', 'status', 'attachment_file']));
+        if (!empty($changes)) {
+            // Notify the sales person who created the quotation
+            $salesPerson = $quotation->creator;
+            $salesPerson->notify(new \App\Notifications\QuotationUpdatedNotification($quotation, $changes, 'sap'));
+        }
+
         return redirect()->back()->with('success', 'SAP number, status, and attachment updated successfully!');
+    }
+
+    private function detectSapChanges($oldData, $newData)
+    {
+        $changes = [];
+
+        $fieldsToCheck = ['sap_number', 'status', 'attachment_file'];
+
+        foreach ($fieldsToCheck as $field) {
+            if ($oldData[$field] !== $newData[$field]) {
+                $changes[] = $field;
+            }
+        }
+
+        return $changes;
     }
 }

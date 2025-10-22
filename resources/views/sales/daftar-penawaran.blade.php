@@ -40,7 +40,7 @@
                                                         <td>{{ $quotation->sales_person }}</td>
                                                         <td>{{ $quotation->jenis_penawaran }}</td>
                                                         <td>{{ $quotation->nama_customer }}</td>
-                                                        <td>{{ $quotation->quotationItems->first()?->diskon ?? '-' }}</td>
+                                                        <td>{{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}</td>
                                                         <td>{{ $quotation->quotationItems->first()?->kategori_harga ?? '-' }}</td>
                                                         <td>
                                                             @if($quotation->quotationItems->count() > 0)
@@ -111,7 +111,7 @@
                                                                                     <td>{{ $item->part_number }}</td>
                                                                                     <td>{{ $item->kategori_harga }}</td>
                                                                                     <td>Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                                                                                    <td>{{ $item->diskon }}</td>
+                                                                                    <td>{{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}</td>
                                                                                     <td>{{ $item->ppn }}</td>
                                                                                 </tr>
                                                                                 @endforeach

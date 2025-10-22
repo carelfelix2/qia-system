@@ -142,19 +142,19 @@
                                             </div>
                                             <div class="row" id="equipment_form" style="display: none;">
                                                 <div class="col-md-2">
-                                                    <input type="text" id="nama_alat_input" class="form-control" placeholder="Nama Alat" required>
+                                                    <input type="text" id="nama_alat_input" class="form-control" placeholder="Nama Alat">
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input type="text" id="tipe_alat_input" class="form-control" placeholder="Tipe Alat" required>
+                                                    <input type="text" id="tipe_alat_input" class="form-control" placeholder="Tipe Alat">
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" id="merk_input" class="form-control" placeholder="Merk">
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input type="text" id="part_number_input" class="form-control" placeholder="Part Number Alat" required>
+                                                    <input type="text" id="part_number_input" class="form-control" placeholder="Part Number Alat">
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <select id="kategori_harga_input" class="form-select" required>
+                                                    <select id="kategori_harga_input" class="form-select">
                                                         <option value="">Kategori Harga</option>
                                                         <option value="harga_retail">Harga Retail</option>
                                                         <option value="harga_inaproc">Harga Inaproc</option>
@@ -163,10 +163,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input type="number" id="harga_input" class="form-control" placeholder="Harga" step="0.01" min="0" required>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" id="diskon_input" class="form-control" placeholder="Diskon">
+                                                    <input type="number" id="harga_input" class="form-control" placeholder="Harga" step="0.01" min="0">
                                                 </div>
                                             </div>
                                         </div>
@@ -180,7 +177,6 @@
                                                         <th>Part Number</th>
                                                         <th>Kategori Harga</th>
                                                         <th>Harga</th>
-                                                        <th>Diskon</th>
                                                         <th>PPN</th>
                                                         <th>Action</th>
                                                     </tr>
@@ -189,6 +185,10 @@
                                                     <!-- Equipment rows will be added here -->
                                                 </tbody>
                                             </table>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Diskon (%)</label>
+                                            <input type="number" name="diskon" class="form-control" value="{{ old('diskon') }}" min="0" max="100" step="0.01">
                                         </div>
                                         <!-- Hidden inputs for form submission -->
                                         <div id="hidden_inputs_container"></div>
@@ -290,7 +290,6 @@
             document.getElementById('kategori_harga_input').value = 'manual'; // Default to manual
             document.getElementById('harga_input').value = '';
             document.getElementById('harga_input').readOnly = false;
-            document.getElementById('diskon_input').value = '';
             document.getElementById('equipment_form').style.display = 'flex';
         }
 
@@ -321,7 +320,6 @@
             const partNumber = document.getElementById('part_number_input').value.trim();
             const kategoriHarga = document.getElementById('kategori_harga_input').value;
             const harga = document.getElementById('harga_input').value.trim();
-            const diskon = document.getElementById('diskon_input').value.trim();
 
             if (!namaAlat || !tipeAlat || !partNumber || !kategoriHarga || !harga) {
                 alert('Please fill in all required fields.');
@@ -338,7 +336,6 @@
                 <td>${partNumber}</td>
                 <td>${kategoriHarga}</td>
                 <td><input type="number" class="form-control" name="items[${equipmentIndex}][harga]" value="${harga}" step="0.01" min="0" required></td>
-                <td><input type="text" class="form-control" name="items[${equipmentIndex}][diskon]" value="${diskon}"></td>
                 <td>
                     <select class="form-select" name="items[${equipmentIndex}][ppn]" required>
                         <option value="">Pilih</option>
@@ -358,7 +355,6 @@
                 <input type="hidden" name="items[${equipmentIndex}][part_number]" value="${partNumber}">
                 <input type="hidden" name="items[${equipmentIndex}][kategori_harga]" value="${kategoriHarga}">
                 <input type="hidden" name="items[${equipmentIndex}][harga]" value="${harga}">
-                <input type="hidden" name="items[${equipmentIndex}][diskon]" value="${diskon}">
             `;
 
             // Clear input fields
@@ -368,7 +364,6 @@
             document.getElementById('part_number_input').value = '';
             document.getElementById('kategori_harga_input').value = '';
             document.getElementById('harga_input').value = '';
-            document.getElementById('diskon_input').value = '';
             document.getElementById('equipment_form').style.display = 'none';
 
             equipmentIndex++;
@@ -415,7 +410,6 @@
                 const partNumber = cells[3].textContent;
                 const kategoriHarga = cells[4].textContent;
                 const harga = cells[5].querySelector('input').value;
-                const diskon = cells[6].querySelector('input').value;
 
                 hiddenContainer.innerHTML += `
                     <input type="hidden" name="items[${newIndex}][nama_alat]" value="${namaAlat}">
@@ -424,7 +418,6 @@
                     <input type="hidden" name="items[${newIndex}][part_number]" value="${partNumber}">
                     <input type="hidden" name="items[${newIndex}][kategori_harga]" value="${kategoriHarga}">
                     <input type="hidden" name="items[${newIndex}][harga]" value="${harga}">
-                    <input type="hidden" name="items[${newIndex}][diskon]" value="${diskon}">
                 `;
             });
 

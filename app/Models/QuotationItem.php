@@ -16,12 +16,10 @@ class QuotationItem extends Model
         'kategori_harga',
         'harga',
         'ppn',
-        'diskon',
     ];
 
     protected $casts = [
         'harga' => 'decimal:2',
-        'diskon' => 'string',
     ];
 
     public function quotation(): BelongsTo

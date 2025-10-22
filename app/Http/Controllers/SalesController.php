@@ -27,15 +27,15 @@ class SalesController extends Controller
             'format_layout' => 'required|in:With total,Without total',
             'nama_customer' => 'required|string|max:255',
             'alamat_customer' => 'required|string',
+            'diskon' => 'nullable|numeric|min:0|max:100',
             'items' => 'required|array|min:1',
             'items.*.nama_alat' => 'required|string|max:255',
             'items.*.tipe_alat' => 'required|string|max:255',
             'items.*.merk' => 'nullable|string|max:255',
             'items.*.part_number' => 'required|string|max:255',
-            'items.*.kategori_harga' => 'required|in:HARGA INAPROC 2025,HARGA RETAIL 2025,NON E-KATALOG (CUSTOM)',
+            'items.*.kategori_harga' => 'required|in:harga_retail,harga_inaproc,harga_sebelum_ppn,manual',
             'items.*.harga' => 'required|numeric|min:0',
-            'items.*.ppn' => 'required|in:YA,Tidak',
-            'items.*.diskon' => 'nullable|string',
+            'items.*.ppn' => 'required|in:Ya,Tidak',
             'pembayaran' => 'required|string',
             'pembayaran_other' => 'nullable|string|max:255',
             'stok' => 'required|string',
@@ -92,15 +92,15 @@ class SalesController extends Controller
             'format_layout' => 'required|in:With total,Without total',
             'nama_customer' => 'required|string|max:255',
             'alamat_customer' => 'required|string',
+            'diskon' => 'nullable|numeric|min:0|max:100',
             'items' => 'required|array|min:1',
             'items.*.nama_alat' => 'required|string|max:255',
             'items.*.tipe_alat' => 'required|string|max:255',
             'items.*.merk' => 'nullable|string|max:255',
             'items.*.part_number' => 'required|string|max:255',
-            'items.*.kategori_harga' => 'required|in:HARGA INAPROC 2025,HARGA RETAIL 2025,NON E-KATALOG (CUSTOM)',
+            'items.*.kategori_harga' => 'required|in:harga_retail,harga_inaproc,harga_sebelum_ppn,manual',
             'items.*.harga' => 'required|numeric|min:0',
-            'items.*.ppn' => 'required|in:YA,Tidak',
-            'items.*.diskon' => 'nullable|string',
+            'items.*.ppn' => 'required|in:Ya,Tidak',
             'pembayaran' => 'required|string',
             'pembayaran_other' => 'nullable|string|max:255',
             'stok' => 'required|string',
@@ -144,7 +144,7 @@ class SalesController extends Controller
             // Send notification to inputer sap users
             $inputerSapUsers = \App\Models\User::role('inputer_sap')->where('status', 'approved')->get();
             foreach ($inputerSapUsers as $user) {
-                $user->notify(new QuotationUpdatedNotification($quotation, $changes));
+                $user->notify(new QuotationUpdatedNotification($quotation, $changes, 'sales'));
             }
         }
 
@@ -157,7 +157,7 @@ class SalesController extends Controller
 
         $fieldsToCheck = [
             'sales_person', 'jenis_penawaran', 'format_layout', 'nama_customer',
-            'alamat_customer', 'pembayaran', 'pembayaran_other', 'stok',
+            'alamat_customer', 'diskon', 'pembayaran', 'pembayaran_other', 'stok',
             'stok_other', 'keterangan_tambahan'
         ];
 

@@ -198,4 +198,60 @@ class SalesController extends Controller
 
         return $changes;
     }
+
+    public function destroy(Quotation $quotation)
+    {
+        // Ensure user can only delete their own quotations
+        if ($quotation->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Only allow deletion of quotations with status 'proses'
+        if ($quotation->status === 'selesai') {
+            return redirect()->back()->with('error', 'Cannot delete completed quotations');
+        }
+
+        // Delete associated quotation items and revisions
+        $quotation->quotationItems()->delete();
+        $quotation->revisions()->delete();
+
+        // Delete the quotation
+        $quotation->delete();
+
+        return redirect()->route('sales.daftar-penawaran')->with('success', 'Quotation deleted successfully!');
+    }
+
+    public function destroyMultiple(Request $request)
+    {
+        $validated = $request->validate([
+            'quotation_ids' => 'required|array|min:1',
+            'quotation_ids.*' => 'required|integer|exists:quotations,id',
+        ]);
+
+        $quotationIds = $validated['quotation_ids'];
+        $userId = auth()->id();
+
+        // Get quotations that belong to the user and are not completed
+        $quotations = Quotation::whereIn('id', $quotationIds)
+            ->where('created_by', $userId)
+            ->where('status', '!=', 'selesai')
+            ->get();
+
+        if ($quotations->isEmpty()) {
+            return redirect()->back()->with('error', 'No valid quotations found to delete');
+        }
+
+        $deletedCount = 0;
+        foreach ($quotations as $quotation) {
+            // Delete associated quotation items and revisions
+            $quotation->quotationItems()->delete();
+            $quotation->revisions()->delete();
+
+            // Delete the quotation
+            $quotation->delete();
+            $deletedCount++;
+        }
+
+        return redirect()->route('sales.daftar-penawaran')->with('success', $deletedCount . ' quotation(s) deleted successfully!');
+    }
 }

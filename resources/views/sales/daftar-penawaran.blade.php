@@ -9,8 +9,8 @@
                 <h3 class="card-title">Daftar Penawaran</h3>
             </div>
             <div class="card-body">
-                <!-- Search Form -->
-                <div class="mb-3">
+                <!-- Search Form and Delete Button -->
+                <div class="mb-3 d-flex justify-content-between align-items-center">
                     <form method="GET" action="{{ route('sales.daftar-penawaran') }}" class="d-flex">
                         <input type="text" name="search" class="form-control me-2" placeholder="Cari berdasarkan nama customer, sales person, jenis penawaran, atau status..." value="{{ request('search') }}">
                         <button type="submit" class="btn btn-primary">
@@ -25,6 +25,19 @@
                             <a href="{{ route('sales.daftar-penawaran') }}" class="btn btn-outline-secondary ms-2">Reset</a>
                         @endif
                     </form>
+
+                    <!-- Delete Selected Button -->
+                    <button type="button" class="btn btn-danger" id="delete-selected-btn" style="display: none;" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <line x1="4" y1="7" x2="20" y2="7" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                        </svg>
+                        Delete Selected
+                    </button>
                 </div>
 
                 @if($quotations->isEmpty())
@@ -37,6 +50,9 @@
                                             <table class="table table-vcenter">
                                                 <thead>
                                                     <tr>
+                                                        <th>
+                                                            <input type="checkbox" id="select-all-checkbox" class="form-check-input">
+                                                        </th>
                                                         <th>No</th>
                                                         <th>Tanggal</th>
                                                         <th>Sales Person</th>
@@ -53,6 +69,11 @@
                                                 <tbody>
                                                     @foreach($quotations as $index => $quotation)
                                                     <tr>
+                                                        <td>
+                                                            @if($quotation->status !== 'selesai')
+                                                                <input type="checkbox" class="quotation-checkbox form-check-input" value="{{ $quotation->id }}">
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $index + 1 }}</td>
                                                         <td>{{ $quotation->created_at->format('d/m/Y H:i') }}</td>
                                                         <td>{{ $quotation->sales_person }}</td>
@@ -102,7 +123,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="11" class="p-0">
+                                                        <td colspan="12" class="p-0">
                                                             <div class="collapse" id="items-{{ $quotation->id }}">
                                                                 <div class="card card-body border-0">
                                                                     <h6>Daftar Alat:</h6>
@@ -149,4 +170,99 @@
         </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Apakah Anda yakin ingin menghapus penawaran yang dipilih? Tindakan ini tidak dapat dibatalkan.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <form id="delete-form" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('select-all-checkbox');
+    const quotationCheckboxes = document.querySelectorAll('.quotation-checkbox');
+    const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+    const deleteForm = document.getElementById('delete-form');
+
+    // Handle select all checkbox
+    selectAllCheckbox.addEventListener('change', function() {
+        quotationCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateDeleteButtonVisibility();
+    });
+
+    // Handle individual checkboxes
+    quotationCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checkedBoxes = document.querySelectorAll('.quotation-checkbox:checked');
+            selectAllCheckbox.checked = checkedBoxes.length === quotationCheckboxes.length;
+            selectAllCheckbox.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < quotationCheckboxes.length;
+            updateDeleteButtonVisibility();
+        });
+    });
+
+    // Update delete button visibility
+    function updateDeleteButtonVisibility() {
+        const checkedBoxes = document.querySelectorAll('.quotation-checkbox:checked');
+        deleteSelectedBtn.style.display = checkedBoxes.length > 0 ? 'block' : 'none';
+    }
+
+    // Handle delete form submission
+    deleteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const checkedBoxes = document.querySelectorAll('.quotation-checkbox:checked');
+        const quotationIds = Array.from(checkedBoxes).map(cb => cb.value);
+
+        if (quotationIds.length === 0) {
+            alert('Pilih setidaknya satu penawaran untuk dihapus.');
+            return;
+        }
+
+        // Create hidden inputs for quotation IDs
+        quotationIds.forEach(id => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'quotation_ids[]';
+            input.value = id;
+            deleteForm.appendChild(input);
+        });
+
+        // Set form action based on single or multiple delete
+        if (quotationIds.length === 1) {
+            deleteForm.action = '{{ route("sales.quotation.destroy", ":id") }}'.replace(':id', quotationIds[0]);
+            deleteForm.method = 'POST';
+            // Add method spoofing for DELETE
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            deleteForm.appendChild(methodInput);
+        } else {
+            deleteForm.action = '{{ route("sales.quotations.destroy-multiple") }}';
+            deleteForm.method = 'POST';
+        }
+
+        // Submit the form
+        deleteForm.submit();
+    });
+});
+</script>
 @endsection

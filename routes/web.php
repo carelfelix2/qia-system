@@ -52,6 +52,8 @@ Route::middleware(['auth', 'role:sales'])->group(function () {
     Route::post('/sales/input-penawaran', [App\Http\Controllers\SalesController::class, 'store'])->name('sales.input-penawaran.store');
     Route::get('/sales/daftar-penawaran', [App\Http\Controllers\SalesController::class, 'quotations'])->name('sales.daftar-penawaran');
     Route::put('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'update'])->name('sales.quotation.update');
+    Route::delete('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'destroy'])->name('sales.quotation.destroy');
+    Route::post('/sales/quotations/delete-multiple', [App\Http\Controllers\SalesController::class, 'destroyMultiple'])->name('sales.quotations.destroy-multiple');
 });
 
 Route::middleware(['auth', 'role:teknisi'])->group(function () {

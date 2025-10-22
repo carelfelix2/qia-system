@@ -92,6 +92,45 @@ class SalesController extends Controller
         return view('sales.daftar-penawaran', compact('quotations'));
     }
 
+    public function edit(Quotation $quotation)
+    {
+        // Ensure user can only edit their own quotations
+        if ($quotation->created_by !== auth()->id()) {
+            abort(403);
+        }
+
+        // Only allow editing of quotations with status 'proses'
+        if ($quotation->status === 'selesai') {
+            abort(403, 'Cannot edit completed quotations');
+        }
+
+        $quotation->load('quotationItems');
+
+        return response()->json([
+            'jenis_penawaran' => $quotation->jenis_penawaran,
+            'format_layout' => $quotation->format_layout,
+            'nama_customer' => $quotation->nama_customer,
+            'alamat_customer' => $quotation->alamat_customer,
+            'diskon' => $quotation->diskon,
+            'pembayaran' => $quotation->pembayaran,
+            'pembayaran_other' => $quotation->pembayaran_other,
+            'stok' => $quotation->stok,
+            'stok_other' => $quotation->stok_other,
+            'keterangan_tambahan' => $quotation->keterangan_tambahan,
+            'items' => $quotation->quotationItems->map(function ($item) {
+                return [
+                    'nama_alat' => $item->nama_alat,
+                    'tipe_alat' => $item->tipe_alat,
+                    'merk' => $item->merk,
+                    'part_number' => $item->part_number,
+                    'kategori_harga' => $item->kategori_harga,
+                    'harga' => $item->harga,
+                    'ppn' => $item->ppn,
+                ];
+            })->toArray(),
+        ]);
+    }
+
     public function update(Request $request, Quotation $quotation)
     {
         // Ensure user can only update their own quotations

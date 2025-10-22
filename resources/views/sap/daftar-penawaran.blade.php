@@ -91,7 +91,7 @@
                                         <div class="collapse" id="items-{{ $quotation->id }}">
                                             <div class="card card-body border-0">
                                                 <div class="row">
-                                                    <div class="col-md-8">
+                                                    <div class="col-12">
                                                         <h6>Daftar Alat:</h6>
                                                         <div class="table-responsive">
                                                             <table class="table table-sm">
@@ -123,30 +123,41 @@
                                                                 </tbody>
                                                             </table>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <h6>Lampiran File:</h6>
-                                                        @if($quotation->attachment_file)
-                                                            <div class="d-flex align-items-center">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-2 text-primary" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                                                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                                                                    <line x1="9" y1="9" x2="10" y2="9" />
-                                                                    <line x1="9" y1="13" x2="15" y2="13" />
-                                                                    <line x1="9" y1="17" x2="15" y2="17" />
-                                                                </svg>
-                                                                <div>
-                                                                    <a href="{{ Storage::url($quotation->attachment_file) }}" target="_blank" class="text-decoration-none">
-                                                                        {{ basename($quotation->attachment_file) }}
-                                                                    </a>
-                                                                    <br>
-                                                                    <small class="text-muted">Klik untuk melihat/download file</small>
-                                                                </div>
+                                                        <div class="row mt-3">
+                                                            <div class="col-md-6">
+                                                                @if($quotation->keterangan_tambahan)
+                                                                    <h6>Keterangan Tambahan:</h6>
+                                                                    <p class="text-muted">{{ $quotation->keterangan_tambahan }}</p>
+                                                                @else
+                                                                    <h6>Keterangan Tambahan:</h6>
+                                                                    <p class="text-muted">-</p>
+                                                                @endif
                                                             </div>
-                                                        @else
-                                                            <p class="text-muted mb-0">Belum ada file lampiran</p>
-                                                        @endif
+                                                            <div class="col-md-6">
+                                                                <h6>Lampiran File:</h6>
+                                                                @if($quotation->attachment_file)
+                                                                    <div class="d-flex align-items-center">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-2 text-primary" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                                            <line x1="9" y1="9" x2="10" y2="9" />
+                                                                            <line x1="9" y1="13" x2="15" y2="13" />
+                                                                            <line x1="9" y1="17" x2="15" y2="17" />
+                                                                        </svg>
+                                                                        <div>
+                                                                            <a href="{{ Storage::url($quotation->attachment_file) }}" target="_blank" class="text-decoration-none">
+                                                                                {{ basename($quotation->attachment_file) }}
+                                                                            </a>
+                                                                            <br>
+                                                                            <small class="text-muted">Klik untuk melihat/download file</small>
+                                                                        </div>
+                                                                    </div>
+                                                                @else
+                                                                    <p class="text-muted mb-0">Belum ada file lampiran</p>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

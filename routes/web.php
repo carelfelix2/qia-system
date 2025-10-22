@@ -51,6 +51,7 @@ Route::middleware(['auth', 'role:sales'])->group(function () {
     Route::get('/sales/input-penawaran', [App\Http\Controllers\SalesController::class, 'create'])->name('sales.input-penawaran.create');
     Route::post('/sales/input-penawaran', [App\Http\Controllers\SalesController::class, 'store'])->name('sales.input-penawaran.store');
     Route::get('/sales/daftar-penawaran', [App\Http\Controllers\SalesController::class, 'quotations'])->name('sales.daftar-penawaran');
+    Route::get('/sales/quotation/{quotation}/edit', [App\Http\Controllers\SalesController::class, 'edit'])->name('sales.quotation.edit');
     Route::put('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'update'])->name('sales.quotation.update');
     Route::delete('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'destroy'])->name('sales.quotation.destroy');
     Route::post('/sales/quotations/delete-multiple', [App\Http\Controllers\SalesController::class, 'destroyMultiple'])->name('sales.quotations.destroy-multiple');

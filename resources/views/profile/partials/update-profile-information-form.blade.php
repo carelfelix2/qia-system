@@ -3,6 +3,10 @@
     <p class="text-muted">{{ __("Update your account's profile information and email address.") }}</p>
 </div>
 
+
+
+<hr class="my-4">
+
 <form id="send-verification" method="post" action="{{ route('verification.send') }}">
     @csrf
 </form>
@@ -21,7 +25,7 @@
     </div>
 
     <div class="d-flex">
-        <button type="submit" class="btn btn-primary">{{ __('Save Name') }}</button>
+        <button type="submit" class="btn btn-primary">{{ __('Save Changes') }}</button>
 
         @if (session('status') === 'profile-updated')
             <div class="ms-3 d-flex align-items-center text-success">

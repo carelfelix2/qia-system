@@ -21,11 +21,10 @@
                 <div class="navbar-nav flex-row order-md-last">
                     <div class="nav-item me-2">
                         <button id="dark-mode-toggle" class="nav-link d-flex lh-1 text-reset p-0" aria-label="Toggle dark mode">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <circle cx="12" cy="12" r="4"/>
-                                <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -6.4l.7 .7m12.1 -.7l.7 .7m0 -11.4l-.7 .7m-12.1 -.7l-.7 .7"/>
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-1">
+                    <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                    <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"></path>
+                  </svg>
                         </button>
                     </div>
                     <div class="nav-item dropdown me-2">
@@ -118,16 +117,37 @@
         </div>
     </div>
     <footer class="footer footer-transparent d-print-none">
-        <div class="container-xl">
+          <div class="container-xl">
             <div class="row text-center align-items-center flex-row-reverse">
-                <div class="col-lg-auto ms-lg-auto">
-                    <ul class="list-inline list-inline-dots mb-0">
-                        <li class="list-inline-item">© 2025 PT. Quantum Inti Akurasi - Made with ❤</li>
-                    </ul>
-                </div>
+              <div class="col-lg-auto ms-lg-auto">
+                <ul class="list-inline list-inline-dots mb-0">
+                  <li class="list-inline-item"><a href="/" target="_blank" class="link-secondary" rel="noopener">Documentation</a></li>
+                  <li class="list-inline-item"><a href="/" class="link-secondary">License</a></li>
+                  <li class="list-inline-item">
+                    <a href="https://github.com/carelfelix2" target="_blank" class="link-secondary" rel="noopener">
+                      <!-- Download SVG icon from http://tabler.io/icons/icon/heart -->
+                       Made with
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-pink icon-inline icon-4">
+                        <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
+                      </svg>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                <ul class="list-inline list-inline-dots mb-0">
+                  <li class="list-inline-item">
+                    Copyright © 2025
+                    <a href="." class="link-secondary">PT. Quantum Inti Akurasi</a>. All rights reserved.
+                  </li>
+                  <li class="list-inline-item">
+                    <a href="./changelog.html" class="link-secondary" rel="noopener"> v1.4.0 </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-        </div>
-    </footer>
+          </div>
+        </footer>
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

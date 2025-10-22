@@ -9,7 +9,25 @@
                 <h3 class="card-title">Daftar Penawaran</h3>
             </div>
             <div class="card-body">
-                                    @if($quotations->isEmpty())
+                <!-- Search Form -->
+                <div class="mb-3">
+                    <form method="GET" action="{{ route('sales.daftar-penawaran') }}" class="d-flex">
+                        <input type="text" name="search" class="form-control me-2" placeholder="Cari berdasarkan nama customer, sales person, jenis penawaran, atau status..." value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <circle cx="10" cy="10" r="7" />
+                                <line x1="21" y1="21" x2="15" y2="15" />
+                            </svg>
+                            Cari
+                        </button>
+                        @if(request('search'))
+                            <a href="{{ route('sales.daftar-penawaran') }}" class="btn btn-outline-secondary ms-2">Reset</a>
+                        @endif
+                    </form>
+                </div>
+
+                @if($quotations->isEmpty())
                                         <div class="text-center py-4">
                                             <p class="text-muted">Belum ada penawaran yang dibuat.</p>
                                             <a href="{{ route('sales.input-penawaran.create') }}" class="btn btn-primary">Buat Penawaran Baru</a>
@@ -53,9 +71,9 @@
                                                         </td>
                                                         <td>
                                                             @if($quotation->status === 'selesai')
-                                                                <span class="badge bg-success">Selesai</span>
+                                                                <span class="badge bg-success me-1"></span>Selesai
                                                             @else
-                                                                <span class="badge bg-warning">Proses</span>
+                                                                <span class="badge bg-warning me-1"></span>Proses
                                                             @endif
                                                         </td>
                                                         <td>

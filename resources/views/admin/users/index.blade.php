@@ -88,29 +88,19 @@
                                 </td>
                                 <td>
                                     @if($user->status === 'pending')
-                                        <span class="badge bg-yellow text-yellow-fg">
-                                            Pending
-                                        </span>
+                                        <span class="badge bg-yellow text-yellow-fg"></span>Peding
                                     @elseif($user->status === 'approved')
-                                        <span class="badge bg-green text-green-fg">
-                                            Approved
-                                        </span>
+                                        <span class="badge bg-green text-green-fg"></span>Approved
                                     @elseif($user->status === 'rejected')
-                                        <span class="badge bg-red text-red-fg">
-                                            Rejected
-                                        </span>
+                                        <span class="badge bg-red text-red-fg"></span>Rejected
                                     @else
-                                        <span class="badge bg-gray text-gray-fg">
-                                            Unknown
-                                        </span>
+                                        <span class="badge bg-gray text-gray-fg"></span>Unknown
                                     @endif
                                 </td>
                                 <td>
                                     @if($user->roles->count() > 0)
                                         @foreach($user->roles as $role)
-                                            <span class="badge bg-purple text-purple-fg mr-1">
-                                                {{ $role->name }}
-                                            </span>
+                                            <span class="badge bg-purple text-purple-fg mr-1"></span>{{ $role->name }}
                                         @endforeach
                                     @else
                                         -

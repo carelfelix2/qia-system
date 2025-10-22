@@ -73,9 +73,22 @@ class SalesController extends Controller
         return redirect()->route('sales.input-penawaran.create')->with('success', 'Quotation submitted successfully!');
     }
 
-    public function quotations()
+    public function quotations(Request $request)
     {
-        $quotations = Quotation::with('quotationItems')->where('created_by', auth()->id())->latest()->get();
+        $query = Quotation::with('quotationItems')->where('created_by', auth()->id());
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_customer', 'like', '%' . $search . '%')
+                  ->orWhere('sales_person', 'like', '%' . $search . '%')
+                  ->orWhere('jenis_penawaran', 'like', '%' . $search . '%')
+                  ->orWhere('status', 'like', '%' . $search . '%');
+            });
+        }
+
+        $quotations = $query->latest()->get();
         return view('sales.daftar-penawaran', compact('quotations'));
     }
 

@@ -27,6 +27,7 @@ class User extends Authenticatable
         'requested_role',
         'registration_date',
         'requested_email',
+        'profile_photo_path',
     ];
 
     /**

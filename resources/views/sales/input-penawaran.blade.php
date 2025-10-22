@@ -30,23 +30,25 @@
                                             <label class="form-label">Sales</label>
                                             <input type="text" name="sales_person" class="form-control" value="{{ auth()->user()->name }}" readonly required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Jenis penawaran</label>
-                                            <select name="jenis_penawaran" class="form-select" required>
-                                                <option value="">Pilih Jenis Penawaran</option>
-                                                <option value="Alat baru" {{ old('jenis_penawaran') == 'Alat baru' ? 'selected' : '' }}>Alat baru</option>
-                                                <option value="Re-kalibrasi" {{ old('jenis_penawaran') == 'Re-kalibrasi' ? 'selected' : '' }}>Re-kalibrasi</option>
-                                                <option value="Perbaikan" {{ old('jenis_penawaran') == 'Perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-                                                <option value="Sewa Alat" {{ old('jenis_penawaran') == 'Sewa Alat' ? 'selected' : '' }}>Sewa Alat</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Format Layout</label>
-                                            <select name="format_layout" class="form-select" required>
-                                                <option value="">Pilih Format Layout</option>
-                                                <option value="With total" {{ old('format_layout') == 'With total' ? 'selected' : '' }}>With total</option>
-                                                <option value="Without total" {{ old('format_layout') == 'Without total' ? 'selected' : '' }}>Without total</option>
-                                            </select>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Jenis penawaran</label>
+                                                <select name="jenis_penawaran" class="form-select" required>
+                                                    <option value="">Pilih Jenis Penawaran</option>
+                                                    <option value="Alat baru" {{ old('jenis_penawaran') == 'Alat baru' ? 'selected' : '' }}>Alat baru</option>
+                                                    <option value="Re-kalibrasi" {{ old('jenis_penawaran') == 'Re-kalibrasi' ? 'selected' : '' }}>Re-kalibrasi</option>
+                                                    <option value="Perbaikan" {{ old('jenis_penawaran') == 'Perbaikan' ? 'selected' : '' }}>Perbaikan</option>
+                                                    <option value="Sewa Alat" {{ old('jenis_penawaran') == 'Sewa Alat' ? 'selected' : '' }}>Sewa Alat</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Format Layout</label>
+                                                <select name="format_layout" class="form-select" required>
+                                                    <option value="">Pilih Format Layout</option>
+                                                    <option value="With total" {{ old('format_layout') == 'With total' ? 'selected' : '' }}>With total</option>
+                                                    <option value="Without total" {{ old('format_layout') == 'Without total' ? 'selected' : '' }}>Without total</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Nama Customer</label>
@@ -113,21 +115,23 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Diskon (%)</label>
-                                            <input type="number" name="diskon" class="form-control" value="{{ old('diskon') }}" min="0" max="100" step="0.01">
-                                        </div>
                                         <!-- Hidden inputs for form submission -->
                                         <div id="hidden_inputs_container"></div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Pembayaran</label>
-                                            <select name="pembayaran" class="form-select" id="pembayaran-select" required>
-                                                <option value="">Pilih Pembayaran</option>
-                                                <option value="30% DP, 70% Sisanya sebelum delivery" {{ old('pembayaran') == '30% DP, 70% Sisanya sebelum delivery' ? 'selected' : '' }}>30% DP, 70% Sisanya sebelum delivery</option>
-                                                <option value="100% Setelah barang diterima" {{ old('pembayaran') == '100% Setelah barang diterima' ? 'selected' : '' }}>100% Setelah barang diterima</option>
-                                                <option value="TT In Advance" {{ old('pembayaran') == 'TT In Advance' ? 'selected' : '' }}>TT In Advance</option>
-                                            </select>
-                                            <input type="text" name="pembayaran_other" id="pembayaran-other" class="form-control mt-2" placeholder="Specify other payment" value="{{ old('pembayaran_other') }}" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Diskon (%)</label>
+                                                <input type="number" name="diskon" class="form-control" value="{{ old('diskon') }}" min="0" max="100" step="0.01">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Pembayaran</label>
+                                                <select name="pembayaran" class="form-select" id="pembayaran-select" required>
+                                                    <option value="">Pilih Pembayaran</option>
+                                                    <option value="30% DP, 70% Sisanya sebelum delivery" {{ old('pembayaran') == '30% DP, 70% Sisanya sebelum delivery' ? 'selected' : '' }}>30% DP, 70% Sisanya sebelum delivery</option>
+                                                    <option value="100% Setelah barang diterima" {{ old('pembayaran') == '100% Setelah barang diterima' ? 'selected' : '' }}>100% Setelah barang diterima</option>
+                                                    <option value="TT In Advance" {{ old('pembayaran') == 'TT In Advance' ? 'selected' : '' }}>TT In Advance</option>
+                                                </select>
+                                                <input type="text" name="pembayaran_other" id="pembayaran-other" class="form-control mt-2" placeholder="Specify other payment" value="{{ old('pembayaran_other') }}" style="display: none;">
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Stok Barang / Lama Pengerjaan</label>

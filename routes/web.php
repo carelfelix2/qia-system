@@ -43,6 +43,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // Equipment management routes
     Route::get('/admin/equipment', [App\Http\Controllers\EquipmentController::class, 'index'])->name('admin.equipment.index');
+    Route::post('/admin/equipment', [App\Http\Controllers\EquipmentController::class, 'store'])->name('admin.equipment.store');
+    Route::get('/admin/equipment/{equipment}/edit', [App\Http\Controllers\EquipmentController::class, 'edit'])->name('admin.equipment.edit');
+    Route::put('/admin/equipment/{equipment}', [App\Http\Controllers\EquipmentController::class, 'update'])->name('admin.equipment.update');
     Route::post('/admin/equipment/import', [App\Http\Controllers\EquipmentController::class, 'import'])->name('admin.equipment.import');
 });
 

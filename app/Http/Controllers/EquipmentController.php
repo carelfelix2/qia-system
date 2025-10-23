@@ -32,6 +32,45 @@ class EquipmentController extends Controller
         return redirect()->back()->with('success', 'Equipment data imported successfully.');
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_alat' => 'required|string|max:255',
+            'tipe_alat' => 'required|string|max:255',
+            'merk' => 'required|string|max:255',
+            'part_number' => 'required|string|max:255|unique:equipment',
+            'harga_retail' => 'nullable|numeric|min:0',
+            'harga_inaproc' => 'nullable|numeric|min:0',
+            'harga_sebelum_ppn' => 'nullable|numeric|min:0',
+        ]);
+
+        Equipment::create($request->all());
+
+        return redirect()->back()->with('success', 'Equipment added successfully.');
+    }
+
+    public function edit(Equipment $equipment)
+    {
+        return response()->json($equipment);
+    }
+
+    public function update(Request $request, Equipment $equipment)
+    {
+        $request->validate([
+            'nama_alat' => 'required|string|max:255',
+            'tipe_alat' => 'required|string|max:255',
+            'merk' => 'required|string|max:255',
+            'part_number' => 'required|string|max:255|unique:equipment,part_number,' . $equipment->id,
+            'harga_retail' => 'nullable|numeric|min:0',
+            'harga_inaproc' => 'nullable|numeric|min:0',
+            'harga_sebelum_ppn' => 'nullable|numeric|min:0',
+        ]);
+
+        $equipment->update($request->all());
+
+        return redirect()->back()->with('success', 'Equipment updated successfully.');
+    }
+
     public function search(Request $request)
     {
         $query = $request->get('q');

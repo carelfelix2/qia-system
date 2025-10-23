@@ -144,7 +144,7 @@
                                                                 <div class="card card-body border-0">
                                                                     <h6>Daftar Alat:</h6>
                                                                     <div class="table-responsive">
-                                                                        <table class="table table-sm">
+                                                                        <table class="table table-sm table-daftar-alat">
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th>Nama Alat</th>

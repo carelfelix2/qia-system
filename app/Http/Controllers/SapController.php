@@ -72,6 +72,31 @@ class SapController extends Controller
         return redirect()->back()->with('success', 'SAP number, status, and attachment updated successfully!');
     }
 
+    public function revisionLog(Request $request)
+    {
+        $query = \App\Models\QuotationRevision::with('quotation', 'user')
+            ->whereHas('quotation') // Ensure quotation exists
+            ->orderBy('created_at', 'desc');
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('quotation', function ($subQ) use ($search) {
+                    $subQ->where('nama_customer', 'like', '%' . $search . '%')
+                         ->orWhere('sap_number', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('user', function ($subQ) use ($search) {
+                    $subQ->where('name', 'like', '%' . $search . '%');
+                });
+            });
+        }
+
+        $revisions = $query->paginate(15);
+
+        return view('sap.log-perubahan', compact('revisions'));
+    }
+
     private function detectSapChanges($oldData, $newData)
     {
         $changes = [];

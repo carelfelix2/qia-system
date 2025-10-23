@@ -64,10 +64,13 @@ class QuotationUpdatedNotification extends Notification implements ShouldQueue
     {
         $updaterText = $this->updaterRole === 'sap' ? 'Inputer SAP' : 'Sales';
 
+        // Create detailed message with changes
+        $changesText = !empty($this->changes) ? ' (' . implode(', ', $this->changes) . ')' : '';
+
         return [
             'type' => 'quotation_updated',
-            'message' => 'Penawaran diperbarui untuk customer ' . $this->quotation->nama_customer . ' oleh ' . $updaterText,
-            'action_url' => $this->updaterRole === 'sap' ? route('sales.daftar-penawaran') : route('sap.daftar-penawaran'),
+            'message' => 'Penawaran diperbarui untuk customer ' . $this->quotation->nama_customer . ' oleh ' . $updaterText . $changesText,
+            'action_url' => $this->updaterRole === 'sap' ? route('sap.log-perubahan') : route('sap.daftar-penawaran'),
             'quotation_id' => $this->quotation->id,
             'changes' => $this->changes,
         ];

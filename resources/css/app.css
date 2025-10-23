@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom styles for table daftar alat */
+.table-daftar-alat {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-daftar-alat td {
+    white-space: nowrap;
+    overflow-x: auto;
+    display: block;
+    max-width: 200px;
+    cursor: text;
+}
+
+.table-daftar-alat tbody tr:hover td {
+    background-color: #f8f9fa;
+}

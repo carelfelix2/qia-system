@@ -97,6 +97,7 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
+                                            <div class="table-responsive">
                                             <table class="table table-bordered" id="equipment_table">
                                                 <thead>
                                                     <tr>
@@ -114,6 +115,7 @@
                                                     <!-- Equipment rows will be added here -->
                                                 </tbody>
                                             </table>
+                                            </div>
                                         </div>
                                         <!-- Hidden inputs for form submission -->
                                         <div id="hidden_inputs_container"></div>

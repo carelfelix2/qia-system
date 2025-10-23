@@ -44,6 +44,7 @@
                                     </th>
                                     <th>Sales Person</th>
                                     <th>Jenis Penawaran</th>
+                                    <th>Format Layout</th>
                                     <th>Nama Customer</th>
                                     <th>Items</th>
                                     <th>Status</th>
@@ -58,6 +59,7 @@
                                     <td>{{ $quotation->created_at->format('d/m/Y H:i') }}</td>
                                     <td>{{ $quotation->sales_person }}</td>
                                     <td>{{ $quotation->jenis_penawaran }}</td>
+                                    <td>{{ $quotation->format_layout }}</td>
                                     <td>{{ $quotation->nama_customer }}</td>
                                     <td>
                                         @if($quotation->quotationItems->count() > 0)
@@ -87,7 +89,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="9" class="p-0">
+                                    <td colspan="10" class="p-0">
                                         <div class="collapse" id="items-{{ $quotation->id }}">
                                             <div class="card card-body border-0">
                                                 <div class="row">

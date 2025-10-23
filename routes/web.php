@@ -66,6 +66,7 @@ Route::middleware(['auth', 'role:teknisi'])->group(function () {
 Route::middleware(['auth', 'role:inputer_sap'])->group(function () {
     Route::get('/sap/dashboard', [App\Http\Controllers\SapController::class, 'index'])->name('sap.dashboard');
     Route::get('/sap/daftar-penawaran', [App\Http\Controllers\SapController::class, 'quotations'])->name('sap.daftar-penawaran');
+    Route::get('/sap/log-perubahan', [App\Http\Controllers\SapController::class, 'revisionLog'])->name('sap.log-perubahan');
     Route::post('/sap/quotation/{quotation}/update-sap', [App\Http\Controllers\SapController::class, 'updateSapNumber'])->name('sap.update-sap-number');
 });
 

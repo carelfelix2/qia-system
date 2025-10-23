@@ -52,6 +52,7 @@
                 <option value="sales">{{ __('Sales') }}</option>
                 <option value="teknisi">{{ __('Teknisi') }}</option>
                 <option value="inputer_sap">{{ __('Inputer SAP') }}</option>
+                <option value="inputer_spk">{{ __('Inputer SPK') }}</option>
             </select>
             <x-input-error :messages="$errors->get('requested_role')" class="mt-2" />
         </div>

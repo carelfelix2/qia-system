@@ -94,11 +94,6 @@ class SalesController extends Controller
 
     public function edit(Quotation $quotation)
     {
-        // Ensure user can only edit their own quotations
-        if ($quotation->created_by !== auth()->id()) {
-            abort(403);
-        }
-
         // Only allow editing of quotations with status 'proses'
         if ($quotation->status === 'selesai') {
             abort(403, 'Cannot edit completed quotations');
@@ -133,11 +128,6 @@ class SalesController extends Controller
 
     public function update(Request $request, Quotation $quotation)
     {
-        // Ensure user can only update their own quotations
-        if ($quotation->created_by !== auth()->id()) {
-            abort(403);
-        }
-
         $validated = $request->validate([
             'sales_person' => 'required|string',
             'jenis_penawaran' => 'required|in:Alat baru,Re-kalibrasi,Perbaikan,Sewa Alat',
@@ -240,11 +230,6 @@ class SalesController extends Controller
 
     public function destroy(Quotation $quotation)
     {
-        // Ensure user can only delete their own quotations
-        if ($quotation->created_by !== auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
-
         // Only allow deletion of quotations with status 'proses'
         if ($quotation->status === 'selesai') {
             return redirect()->back()->with('error', 'Cannot delete completed quotations');
@@ -268,11 +253,9 @@ class SalesController extends Controller
         ]);
 
         $quotationIds = $validated['quotation_ids'];
-        $userId = auth()->id();
 
-        // Get quotations that belong to the user and are not completed
+        // Get quotations that are not completed
         $quotations = Quotation::whereIn('id', $quotationIds)
-            ->where('created_by', $userId)
             ->where('status', '!=', 'selesai')
             ->get();
 
@@ -292,5 +275,30 @@ class SalesController extends Controller
         }
 
         return redirect()->route('sales.daftar-penawaran')->with('success', $deletedCount . ' quotation(s) deleted successfully!');
+    }
+
+    public function uploadPo(Request $request, Quotation $quotation)
+    {
+        // Only allow upload for completed quotations
+        if ($quotation->status !== 'selesai') {
+            return response()->json(['error' => 'Can only upload PO files for completed quotations'], 403);
+        }
+
+        $validated = $request->validate([
+            'po_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB max
+        ]);
+
+        // Store the file
+        $file = $request->file('po_file');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('po_files', $filename, 'public');
+
+        // Save to database
+        $quotation->poFiles()->create([
+            'uploaded_by' => auth()->id(),
+            'file_path' => $path,
+        ]);
+
+        return response()->json(['success' => 'PO file uploaded successfully']);
     }
 }

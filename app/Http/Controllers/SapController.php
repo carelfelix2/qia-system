@@ -97,6 +97,43 @@ class SapController extends Controller
         return view('sap.log-perubahan', compact('revisions'));
     }
 
+    public function daftarPo(Request $request)
+    {
+        // Get latest PO file per quotation
+        $poFiles = \App\Models\POFile::with('quotation', 'uploader')
+            ->whereIn('id', function($sub) {
+                $sub->select(\DB::raw('MAX(id)'))
+                    ->from('po_files')
+                    ->groupBy('quotation_id');
+            })
+            ->whereHas('quotation') // Ensure quotation exists
+            ->orderBy('created_at', 'desc');
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $poFiles->where(function ($q) use ($search) {
+                $q->whereHas('quotation', function ($subQ) use ($search) {
+                    $subQ->where('nama_customer', 'like', '%' . $search . '%')
+                         ->orWhere('sap_number', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('uploader', function ($subQ) use ($search) {
+                    $subQ->where('name', 'like', '%' . $search . '%');
+                });
+            });
+        }
+
+        $poFiles = $poFiles->paginate(15);
+
+        return view('sap.daftar-po', compact('poFiles'));
+    }
+
+    public function show(Quotation $quotation)
+    {
+        $quotation->load('quotationItems', 'creator', 'poFiles.uploader');
+        return view('sap.quotation-detail', compact('quotation'));
+    }
+
     private function detectSapChanges($oldData, $newData)
     {
         $changes = [];

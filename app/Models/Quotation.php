@@ -49,4 +49,9 @@ class Quotation extends Model
     {
         return $this->hasOne(PurchaseOrder::class);
     }
+
+    public function poFiles(): HasMany
+    {
+        return $this->hasMany(POFile::class);
+    }
 }

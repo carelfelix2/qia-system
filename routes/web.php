@@ -20,6 +20,8 @@ Route::get('/dashboard', function () {
             return redirect('/teknisi/dashboard');
         } elseif ($user->hasRole('inputer_sap')) {
             return redirect('/sap/dashboard');
+        } elseif ($user->hasRole('inputer_spk')) {
+            return redirect('/sap/dashboard');
         }
     }
 
@@ -58,6 +60,7 @@ Route::middleware(['auth', 'role:sales'])->group(function () {
     Route::put('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'update'])->name('sales.quotation.update');
     Route::delete('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'destroy'])->name('sales.quotation.destroy');
     Route::post('/sales/quotations/delete-multiple', [App\Http\Controllers\SalesController::class, 'destroyMultiple'])->name('sales.quotations.destroy-multiple');
+    Route::post('/sales/quotation/{quotation}/upload-po', [App\Http\Controllers\SalesController::class, 'uploadPo'])->name('sales.quotation.upload-po');
 });
 
 Route::middleware(['auth', 'role:teknisi'])->group(function () {
@@ -66,10 +69,12 @@ Route::middleware(['auth', 'role:teknisi'])->group(function () {
     });
 });
 
-Route::middleware(['auth', 'role:inputer_sap'])->group(function () {
+Route::middleware(['auth', 'role:inputer_sap|inputer_spk'])->group(function () {
     Route::get('/sap/dashboard', [App\Http\Controllers\SapController::class, 'index'])->name('sap.dashboard');
     Route::get('/sap/daftar-penawaran', [App\Http\Controllers\SapController::class, 'quotations'])->name('sap.daftar-penawaran');
     Route::get('/sap/log-perubahan', [App\Http\Controllers\SapController::class, 'revisionLog'])->name('sap.log-perubahan');
+    Route::get('/sap/daftar-po', [App\Http\Controllers\SapController::class, 'daftarPo'])->name('sap.daftar-po');
+    Route::get('/sap/quotation/{quotation}', [App\Http\Controllers\SapController::class, 'show'])->name('sap.quotation.show');
     Route::post('/sap/quotation/{quotation}/update-sap', [App\Http\Controllers\SapController::class, 'updateSapNumber'])->name('sap.update-sap-number');
 });
 

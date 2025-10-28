@@ -30,11 +30,11 @@
         </style>
     </head>
     <body class="font-sans text-gray-900 antialiased min-h-screen" style="background-color: #f9fafb;">
-        <div class="min-h-screen flex flex-col items-center justify-center pl-[80%] lg:pl-[80%]">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div class="text-center mb-4">
                 <img src="/images/logo.png" alt="Logo" class="mx-auto" style="height: 60px;">
             </div>
-            <div class="w-100 max-w-xl mx-auto px-6 py-4 bg-white bg-opacity-95 shadow-lg overflow-hidden rounded-lg backdrop-blur-sm">
+            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
         </div>

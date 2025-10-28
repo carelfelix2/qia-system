@@ -133,6 +133,17 @@
                                                                     </svg>
                                                                     Edit
                                                                 </button>
+                                                            @elseif($quotation->status === 'selesai')
+                                                                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadPoModal" data-quotation-id="{{ $quotation->id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                                        <line x1="12" y1="11" x2="12" y2="17" />
+                                                                        <line x1="9" y1="14" x2="15" y2="14" />
+                                                                    </svg>
+                                                                    Upload PO
+                                                                </button>
                                                             @else
                                                                 <span class="text-muted">-</span>
                                                             @endif
@@ -358,6 +369,32 @@
     </div>
 </div>
 
+<!-- Upload PO Modal -->
+<div class="modal fade" id="uploadPoModal" tabindex="-1" aria-labelledby="uploadPoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadPoModalLabel">Upload File PO</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadPoForm" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="po_file" class="form-label">Pilih File PO</label>
+                        <input type="file" class="form-control" id="po_file" name="po_file" accept=".pdf,.jpg,.jpeg,.png" required>
+                        <div class="form-text">Format yang didukung: PDF, JPG, PNG. Maksimal 5MB.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="uploadPoBtn">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
@@ -439,7 +476,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Fetch quotation data
         fetch(`/sales/quotation/${quotationId}/edit`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        return response.text().then(text => {
+                            throw new Error(text || 'You do not have permission to edit this quotation.');
+                        });
+                    } else {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                }
+                return response.json();
+            })
             .then(data => {
                 // Populate form fields
                 editForm.querySelector('[name="jenis_penawaran"]').value = data.jenis_penawaran;
@@ -500,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error loading quotation data:', error);
-                alert('Error loading quotation data');
+                alert(error.message || 'Error loading quotation data');
             });
     });
 
@@ -704,6 +752,50 @@ document.addEventListener('DOMContentLoaded', function() {
             otherInput.style.display = 'none';
             otherInput.required = false;
         }
+    });
+
+    // Upload PO modal functionality
+    const uploadPoModal = document.getElementById('uploadPoModal');
+    const uploadPoForm = document.getElementById('uploadPoForm');
+    const uploadPoBtn = document.getElementById('uploadPoBtn');
+
+    uploadPoModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const quotationId = button.getAttribute('data-quotation-id');
+        uploadPoForm.setAttribute('data-quotation-id', quotationId);
+    });
+
+    uploadPoBtn.addEventListener('click', function() {
+        const quotationId = uploadPoForm.getAttribute('data-quotation-id');
+        const formData = new FormData(uploadPoForm);
+
+        fetch(`/sales/quotation/${quotationId}/upload-po`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('File PO berhasil diupload!');
+                uploadPoModal.querySelector('.btn-close').click();
+                location.reload(); // Refresh to show updated data
+            } else {
+                alert('Error: ' + (data.error || 'Upload gagal'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat upload file.');
+        });
+    });
+
+    // Reset form when modal is hidden
+    uploadPoModal.addEventListener('hidden.bs.modal', function() {
+        uploadPoForm.reset();
+        uploadPoForm.removeAttribute('data-quotation-id');
     });
 });
 </script>

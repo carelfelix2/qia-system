@@ -7,10 +7,10 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Dashboard Inputer SAP</h3>
+                <h3 class="card-title">Dashboard {{ auth()->user()->hasRole('inputer_spk') ? 'Inputer SPK' : 'Inputer SAP' }}</h3>
             </div>
             <div class="card-body">
-                <p>Selamat datang di dashboard Inputer SAP. Anda dapat mengelola penawaran dari sales dan menginput nomor SAP.</p>
+                <p>Selamat datang di dashboard {{ auth()->user()->hasRole('inputer_spk') ? 'Inputer SPK' : 'Inputer SAP' }}. Anda dapat mengelola penawaran dari sales dan menginput nomor SAP.</p>
 
                 <div class="row">
                     <div class="col-md-6">

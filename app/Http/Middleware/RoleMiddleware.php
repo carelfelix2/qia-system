@@ -13,10 +13,17 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
-        if (!$request->user() || !$request->user()->hasRole($role)) {
+        if (!$request->user()) {
             abort(403, 'Akses ditolak.');
         }
 
-        return $next($request);
+        $roles = explode('|', $role);
+        foreach ($roles as $r) {
+            if ($request->user()->hasRole($r)) {
+                return $next($request);
+            }
+        }
+
+        abort(403, 'Akses ditolak.');
     }
 }

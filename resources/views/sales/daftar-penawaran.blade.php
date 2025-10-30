@@ -46,7 +46,7 @@
                                             <a href="{{ route('sales.input-penawaran.create') }}" class="btn btn-primary">Buat Penawaran Baru</a>
                                         </div>
                                     @else
-                                        <div class="table-responsive">
+                                        <div class="table-responsive draggable-table">
                                             <table class="table table-vcenter">
                                                 <thead>
                                                     <tr>
@@ -58,9 +58,9 @@
                                                         <th>Sales Person</th>
                                                         <th>Jenis Penawaran</th>
                                                         <th>Nama Customer</th>
-                                                        <th>Diskon</th>
-                                                        <th>Kategori Harga</th>
                                                         <th>Items</th>
+                                                        <th>Pembayaran</th>
+                                                        <th>Stok Barang</th>
                                                         <th>Status</th>
                                                         <th>No SAP</th>
                                                         <th>Lampiran</th>
@@ -80,8 +80,6 @@
                                                         <td>{{ $quotation->sales_person }}</td>
                                                         <td>{{ $quotation->jenis_penawaran }}</td>
                                                         <td>{{ $quotation->nama_customer }}</td>
-                                                        <td>{{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}</td>
-                                                        <td>{{ $quotation->quotationItems->first()?->kategori_harga ?? '-' }}</td>
                                                         <td>
                                                             @if($quotation->quotationItems->count() > 0)
                                                                 <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#items-{{ $quotation->id }}" aria-expanded="false" aria-controls="items-{{ $quotation->id }}">
@@ -89,6 +87,20 @@
                                                                 </button>
                                                             @else
                                                                 -
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if($quotation->pembayaran === 'Manual')
+                                                                {{ $quotation->pembayaran_other }}
+                                                            @else
+                                                                {{ $quotation->pembayaran }}
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if($quotation->stok === 'Manual')
+                                                                {{ $quotation->stok_other }}
+                                                            @else
+                                                                {{ $quotation->stok }}
                                                             @endif
                                                         </td>
                                                         <td>
@@ -150,7 +162,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="14" class="p-0">
+                                                        <td colspan="16" class="p-0">
                                                             <div class="collapse" id="items-{{ $quotation->id }}">
                                                                 <div class="card card-body border-0">
                                                                     <h6>Daftar Alat:</h6>
@@ -184,12 +196,44 @@
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
-                                                                    @if($quotation->keterangan_tambahan)
-                                                                        <div class="mt-3">
-                                                                            <h6>Keterangan Tambahan:</h6>
-                                                                            <p class="text-muted">{{ $quotation->keterangan_tambahan }}</p>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-6">
+                                                                            @if($quotation->keterangan_tambahan)
+                                                                                <h6>Keterangan Tambahan:</h6>
+                                                                                <p class="text-muted">{{ $quotation->keterangan_tambahan }}</p>
+                                                                            @else
+                                                                                <h6>Keterangan Tambahan:</h6>
+                                                                                <p class="text-muted">-</p>
+                                                                            @endif
                                                                         </div>
-                                                                    @endif
+                                                                        <div class="col-md-6">
+                                                                            @if($quotation->poFiles->count() > 0)
+                                                                                <h6>File PO:</h6>
+                                                                                @foreach($quotation->poFiles as $poFile)
+                                                                                <div class="d-flex align-items-center mb-2">
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-2 text-primary" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                                                        <line x1="9" y1="9" x2="10" y2="9" />
+                                                                                        <line x1="9" y1="13" x2="15" y2="13" />
+                                                                                        <line x1="9" y1="17" x2="15" y2="17" />
+                                                                                    </svg>
+                                                                                    <div>
+                                                                                        <a href="{{ Storage::url($poFile->file_path) }}" target="_blank" class="text-decoration-none">
+                                                                                            {{ basename($poFile->file_path) }}
+                                                                                        </a>
+                                                                                        <br>
+                                                                                        <small class="text-muted">Uploaded by {{ $poFile->uploader->name }} on {{ $poFile->created_at->format('d/m/Y H:i') }}</small>
+                                                                                    </div>
+                                                                                </div>
+                                                                                @endforeach
+                                                                            @else
+                                                                                <h6>File PO:</h6>
+                                                                                <p class="text-muted">-</p>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -319,8 +363,9 @@
                                 <option value="30% DP, 70% Sisanya sebelum delivery">30% DP, 70% Sisanya sebelum delivery</option>
                                 <option value="100% Setelah barang diterima">100% Setelah barang diterima</option>
                                 <option value="TT In Advance">TT In Advance</option>
+                                <option value="Manual">Isi Manual</option>
                             </select>
-                            <input type="text" name="pembayaran_other" id="edit_pembayaran-other" class="form-control mt-2" placeholder="Specify other payment" style="display: none;">
+                            <input type="text" name="pembayaran_other" id="edit_pembayaran-other" class="form-control mt-2" placeholder="Isi manual pembayaran" style="display: none;">
                         </div>
                     </div>
                     <div class="mb-3">
@@ -330,8 +375,9 @@
                             <option value="Ready stock tidak mengikat">Ready stock tidak mengikat</option>
                             <option value="Indent 10-12 Minggu (Setelah DP diterima)">Indent 10-12 Minggu (Setelah DP diterima)</option>
                             <option value="Indent 10-12 Minggu">Indent 10-12 Minggu</option>
+                            <option value="Manual">Isi Manual</option>
                         </select>
-                        <input type="text" name="stok_other" id="edit_stok-other" class="form-control mt-2" placeholder="Specify other stock info" style="display: none;">
+                        <input type="text" name="stok_other" id="edit_stok-other" class="form-control mt-2" placeholder="Isi manual stok barang / lama pengerjaan" style="display: none;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Keterangan Tambahan</label>
@@ -394,6 +440,18 @@
         </div>
     </div>
 </div>
+
+<style>
+.draggable-table {
+    overflow-x: auto;
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable-table:active {
+    cursor: grabbing;
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -502,10 +560,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 editForm.querySelector('[name="keterangan_tambahan"]').value = data.keterangan_tambahan || '';
 
                 // Handle conditional fields
-                if (data.pembayaran === 'Other:') {
+                if (data.pembayaran === 'Manual') {
                     document.getElementById('edit_pembayaran-other').style.display = 'block';
                 }
-                if (data.stok === 'Other:') {
+                if (data.stok === 'Manual') {
                     document.getElementById('edit_stok-other').style.display = 'block';
                 }
 
@@ -734,7 +792,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('edit_pembayaran-select').addEventListener('change', function() {
         const otherInput = document.getElementById('edit_pembayaran-other');
-        if (this.value === 'Other:') {
+        if (this.value === 'Manual') {
             otherInput.style.display = 'block';
             otherInput.required = true;
         } else {
@@ -745,7 +803,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('edit_stok-select').addEventListener('change', function() {
         const otherInput = document.getElementById('edit_stok-other');
-        if (this.value === 'Other:') {
+        if (this.value === 'Manual') {
             otherInput.style.display = 'block';
             otherInput.required = true;
         } else {
@@ -796,6 +854,37 @@ document.addEventListener('DOMContentLoaded', function() {
     uploadPoModal.addEventListener('hidden.bs.modal', function() {
         uploadPoForm.reset();
         uploadPoForm.removeAttribute('data-quotation-id');
+    });
+
+    // Draggable table functionality
+    const draggableTable = document.querySelector('.draggable-table');
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    draggableTable.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX - draggableTable.offsetLeft;
+        scrollLeft = draggableTable.scrollLeft;
+        draggableTable.style.cursor = 'grabbing';
+    });
+
+    draggableTable.addEventListener('mouseleave', () => {
+        isDragging = false;
+        draggableTable.style.cursor = 'grab';
+    });
+
+    draggableTable.addEventListener('mouseup', () => {
+        isDragging = false;
+        draggableTable.style.cursor = 'grab';
+    });
+
+    draggableTable.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - draggableTable.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll speed multiplier
+        draggableTable.scrollLeft = scrollLeft - walk;
     });
 });
 </script>

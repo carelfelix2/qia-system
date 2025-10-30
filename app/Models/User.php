@@ -53,4 +53,12 @@ class User extends Authenticatable
             'registration_date' => 'datetime',
         ];
     }
+
+    /**
+     * Get the quotations created by the user.
+     */
+    public function quotations()
+    {
+        return $this->hasMany(Quotation::class, 'created_by');
+    }
 }

@@ -97,7 +97,7 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <div class="table-responsive">
+                                            <div class="table-responsive draggable-table">
                                             <table class="table table-bordered" id="equipment_table">
                                                 <thead>
                                                     <tr>
@@ -131,8 +131,9 @@
                                                     <option value="30% DP, 70% Sisanya sebelum delivery" {{ old('pembayaran') == '30% DP, 70% Sisanya sebelum delivery' ? 'selected' : '' }}>30% DP, 70% Sisanya sebelum delivery</option>
                                                     <option value="100% Setelah barang diterima" {{ old('pembayaran') == '100% Setelah barang diterima' ? 'selected' : '' }}>100% Setelah barang diterima</option>
                                                     <option value="TT In Advance" {{ old('pembayaran') == 'TT In Advance' ? 'selected' : '' }}>TT In Advance</option>
+                                                    <option value="Manual" {{ old('pembayaran') == 'Manual' ? 'selected' : '' }}>Isi Manual</option>
                                                 </select>
-                                                <input type="text" name="pembayaran_other" id="pembayaran-other" class="form-control mt-2" placeholder="Specify other payment" value="{{ old('pembayaran_other') }}" style="display: none;">
+                                                <input type="text" name="pembayaran_other" id="pembayaran-other" class="form-control mt-2" placeholder="Isi manual pembayaran" value="{{ old('pembayaran_other') }}" style="display: none;">
                                             </div>
                                         </div>
                                         <div class="mb-3">
@@ -142,9 +143,9 @@
                                                 <option value="Ready stock tidak mengikat" {{ old('stok') == 'Ready stock tidak mengikat' ? 'selected' : '' }}>Ready stock tidak mengikat</option>
                                                 <option value="Indent 10-12 Minggu (Setelah DP diterima)" {{ old('stok') == 'Indent 10-12 Minggu (Setelah DP diterima)' ? 'selected' : '' }}>Indent 10-12 Minggu (Setelah DP diterima)</option>
                                                 <option value="Indent 10-12 Minggu" {{ old('stok') == 'Indent 10-12 Minggu' ? 'selected' : '' }}>Indent 10-12 Minggu</option>
-
+                                                <option value="Manual" {{ old('stok') == 'Manual' ? 'selected' : '' }}>Isi Manual</option>
                                             </select>
-                                            <input type="text" name="stok_other" id="stok-other" class="form-control mt-2" placeholder="Specify other stock info" value="{{ old('stok_other') }}" style="display: none;">
+                                            <input type="text" name="stok_other" id="stok-other" class="form-control mt-2" placeholder="Isi manual stok barang / lama pengerjaan" value="{{ old('stok_other') }}" style="display: none;">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Keterangan Tambahan</label>
@@ -346,7 +347,7 @@
 
         document.getElementById('pembayaran-select').addEventListener('change', function() {
             const otherInput = document.getElementById('pembayaran-other');
-            if (this.value === 'Other:') {
+            if (this.value === 'Manual') {
                 otherInput.style.display = 'block';
                 otherInput.required = true;
             } else {
@@ -357,7 +358,7 @@
 
         document.getElementById('stok-select').addEventListener('change', function() {
             const otherInput = document.getElementById('stok-other');
-            if (this.value === 'Other:') {
+            if (this.value === 'Manual') {
                 otherInput.style.display = 'block';
                 otherInput.required = true;
             } else {
@@ -371,12 +372,55 @@
             const pembayaranSelect = document.getElementById('pembayaran-select');
             const stokSelect = document.getElementById('stok-select');
 
-            if (pembayaranSelect.value === 'Other:') {
+            if (pembayaranSelect.value === 'Manual') {
                 document.getElementById('pembayaran-other').style.display = 'block';
             }
-            if (stokSelect.value === 'Other:') {
+            if (stokSelect.value === 'Manual') {
                 document.getElementById('stok-other').style.display = 'block';
             }
         });
+
+        // Draggable table functionality
+        const draggableTable = document.querySelector('.draggable-table');
+        let isDragging = false;
+        let startX;
+        let scrollLeft;
+
+        draggableTable.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX - draggableTable.offsetLeft;
+            scrollLeft = draggableTable.scrollLeft;
+            draggableTable.style.cursor = 'grabbing';
+        });
+
+        draggableTable.addEventListener('mouseleave', () => {
+            isDragging = false;
+            draggableTable.style.cursor = 'grab';
+        });
+
+        draggableTable.addEventListener('mouseup', () => {
+            isDragging = false;
+            draggableTable.style.cursor = 'grab';
+        });
+
+        draggableTable.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - draggableTable.offsetLeft;
+            const walk = (x - startX) * 2; // Scroll speed multiplier
+            draggableTable.scrollLeft = scrollLeft - walk;
+        });
     </script>
+
+<style>
+.draggable-table {
+    overflow-x: auto;
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable-table:active {
+    cursor: grabbing;
+}
+</style>
 @endsection

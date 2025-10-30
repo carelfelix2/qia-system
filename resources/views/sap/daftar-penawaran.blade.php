@@ -28,7 +28,7 @@
                         <p class="text-muted">Belum ada penawaran yang dibuat oleh sales.</p>
                     </div>
                 @else
-                    <div class="table-responsive">
+                    <div class="table-responsive draggable-table">
                         <table class="table table-vcenter">
                             <thead>
                                                 <tr>
@@ -84,7 +84,7 @@
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal-{{ $quotation->id }}">
-                                            Input SAP
+                                            Input SQ
                                         </button>
                                     </td>
                                 </tr>
@@ -222,4 +222,50 @@
         </div>
     </div>
 </div>
+<style>
+.draggable-table {
+    overflow-x: auto;
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable-table:active {
+    cursor: grabbing;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Draggable table functionality
+    const draggableTable = document.querySelector('.draggable-table');
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    draggableTable.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX - draggableTable.offsetLeft;
+        scrollLeft = draggableTable.scrollLeft;
+        draggableTable.style.cursor = 'grabbing';
+    });
+
+    draggableTable.addEventListener('mouseleave', () => {
+        isDragging = false;
+        draggableTable.style.cursor = 'grab';
+    });
+
+    draggableTable.addEventListener('mouseup', () => {
+        isDragging = false;
+        draggableTable.style.cursor = 'grab';
+    });
+
+    draggableTable.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - draggableTable.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll speed multiplier
+        draggableTable.scrollLeft = scrollLeft - walk;
+    });
+});
+</script>
 @endsection

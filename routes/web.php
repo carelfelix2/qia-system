@@ -42,6 +42,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/users/{user}/remove-role', [App\Http\Controllers\UserManagementController::class, 'removeRole'])->name('admin.users.remove-role');
     Route::post('/admin/users/{user}/approve-email-change', [App\Http\Controllers\UserManagementController::class, 'approveEmailChange'])->name('admin.users.approve-email-change');
     Route::post('/admin/users/{user}/reject-email-change', [App\Http\Controllers\UserManagementController::class, 'rejectEmailChange'])->name('admin.users.reject-email-change');
+    Route::delete('/admin/users/{user}/delete', [App\Http\Controllers\UserManagementController::class, 'deleteUser'])->name('admin.users.delete');
 
     // Equipment management routes
     Route::get('/admin/equipment', [App\Http\Controllers\EquipmentController::class, 'index'])->name('admin.equipment.index');
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'role:sales'])->group(function () {
     Route::get('/sales/input-penawaran', [App\Http\Controllers\SalesController::class, 'create'])->name('sales.input-penawaran.create');
     Route::post('/sales/input-penawaran', [App\Http\Controllers\SalesController::class, 'store'])->name('sales.input-penawaran.store');
     Route::get('/sales/daftar-penawaran', [App\Http\Controllers\SalesController::class, 'quotations'])->name('sales.daftar-penawaran');
+    Route::get('/sales/daftar-po', [App\Http\Controllers\SalesController::class, 'daftarPo'])->name('sales.daftar-po');
     Route::get('/sales/quotation/{quotation}/edit', [App\Http\Controllers\SalesController::class, 'edit'])->name('sales.quotation.edit');
     Route::put('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'update'])->name('sales.quotation.update');
     Route::delete('/sales/quotation/{quotation}', [App\Http\Controllers\SalesController::class, 'destroy'])->name('sales.quotation.destroy');

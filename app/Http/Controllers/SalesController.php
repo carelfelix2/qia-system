@@ -44,10 +44,10 @@ class SalesController extends Controller
         ]);
 
         // Handle conditional fields
-        if ($validated['pembayaran'] !== 'Other:') {
+        if ($validated['pembayaran'] !== 'Manual') {
             $validated['pembayaran_other'] = null;
         }
-        if ($validated['stok'] !== 'Other:') {
+        if ($validated['stok'] !== 'Manual') {
             $validated['stok_other'] = null;
         }
 
@@ -75,7 +75,7 @@ class SalesController extends Controller
 
     public function quotations(Request $request)
     {
-        $query = Quotation::with('quotationItems')->where('created_by', auth()->id());
+        $query = Quotation::with('quotationItems', 'poFiles')->where('created_by', auth()->id());
 
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
@@ -151,10 +151,10 @@ class SalesController extends Controller
         ]);
 
         // Handle conditional fields
-        if ($validated['pembayaran'] !== 'Other:') {
+        if ($validated['pembayaran'] !== 'Manual') {
             $validated['pembayaran_other'] = null;
         }
-        if ($validated['stok'] !== 'Other:') {
+        if ($validated['stok'] !== 'Manual') {
             $validated['stok_other'] = null;
         }
 
@@ -288,7 +288,17 @@ class SalesController extends Controller
             'po_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB max
         ]);
 
-        // Store the file
+        // Delete existing PO files and their physical files
+        foreach ($quotation->poFiles as $poFile) {
+            // Delete physical file
+            if (\Storage::disk('public')->exists($poFile->file_path)) {
+                \Storage::disk('public')->delete($poFile->file_path);
+            }
+            // Delete database record
+            $poFile->delete();
+        }
+
+        // Store the new file
         $file = $request->file('po_file');
         $filename = time() . '_' . $file->getClientOriginalName();
         $path = $file->storeAs('po_files', $filename, 'public');
@@ -300,5 +310,27 @@ class SalesController extends Controller
         ]);
 
         return response()->json(['success' => 'PO file uploaded successfully']);
+    }
+
+    public function daftarPo(Request $request)
+    {
+        $query = Quotation::with('quotationItems', 'poFiles.uploader')
+            ->where('created_by', auth()->id())
+            ->where('status', 'selesai')
+            ->whereHas('poFiles'); // Only show quotations that have PO files
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_customer', 'like', '%' . $search . '%')
+                  ->orWhere('sales_person', 'like', '%' . $search . '%')
+                  ->orWhere('jenis_penawaran', 'like', '%' . $search . '%')
+                  ->orWhere('sap_number', 'like', '%' . $search . '%');
+            });
+        }
+
+        $quotations = $query->latest()->get();
+        return view('sales.daftar-po', compact('quotations'));
     }
 }

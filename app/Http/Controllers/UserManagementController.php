@@ -132,4 +132,56 @@ class UserManagementController extends Controller
 
         return redirect()->back()->with('success', 'Email change request rejected.');
     }
+
+    public function deleteUser(User $user)
+    {
+        // Prevent deleting admin users
+        if ($user->hasRole('admin')) {
+            return redirect()->back()->with('error', 'Admin users cannot be deleted.');
+        }
+
+        // Delete all related data
+        // Delete quotations and related data
+        foreach ($user->quotations as $quotation) {
+            // Delete attachment file if exists
+            if ($quotation->attachment_file && \Storage::disk('public')->exists($quotation->attachment_file)) {
+                \Storage::disk('public')->delete($quotation->attachment_file);
+            }
+
+            // Delete quotation items
+            $quotation->quotationItems()->delete();
+
+            // Delete revisions
+            $quotation->revisions()->delete();
+
+            // Delete PO files
+            foreach ($quotation->poFiles as $poFile) {
+                if (\Storage::disk('public')->exists($poFile->file_path)) {
+                    \Storage::disk('public')->delete($poFile->file_path);
+                }
+            }
+            $quotation->poFiles()->delete();
+
+            // Delete purchase order
+            if ($quotation->purchaseOrder) {
+                $quotation->purchaseOrder->delete();
+            }
+
+            // Delete quotation
+            $quotation->delete();
+        }
+
+        // Delete profile photo if exists
+        if ($user->profile_photo_path && \Storage::disk('public')->exists($user->profile_photo_path)) {
+            \Storage::disk('public')->delete($user->profile_photo_path);
+        }
+
+        // Delete notifications
+        $user->notifications()->delete();
+
+        // Delete the user
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User and all associated data have been permanently deleted.');
+    }
 }

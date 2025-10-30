@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'SAP Inputer Dashboard') - PT. Quantum Inti Akurasi</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     @vite('resources/css/tabler.css')
     <style>
         .navbar-brand-image {
@@ -57,7 +58,7 @@
                                 </div>
                             </div>
                             <div class="dropdown-divider"></div>
-                            <a href="{{ route('profile.edit') }}" class="dropdown-item text-center">View All</a>
+                            <a href="{{ route('sap.log-perubahan') }}" class="dropdown-item text-center">View All</a>
                         </div>
                     </div>
                     <div class="nav-item dropdown">
@@ -236,6 +237,30 @@
                         const iconClass = notification.read_at ? 'text-muted' : 'text-blue';
                         const itemClass = notification.read_at ? '' : 'fw-bold';
                         const actionUrl = notification.action_url || '#';
+
+                        // Format changes if they exist
+                        let changesHtml = '';
+                        if (notification.data && notification.data.changes && notification.data.changes.length > 0) {
+                            const changes = notification.data.changes;
+                            const changeLabels = {
+                                'sales_person': 'Sales Person',
+                                'jenis_penawaran': 'Jenis Penawaran',
+                                'format_layout': 'Format Layout',
+                                'nama_customer': 'Nama Customer',
+                                'alamat_customer': 'Alamat Customer',
+                                'diskon': 'Diskon',
+                                'pembayaran': 'Pembayaran',
+                                'pembayaran_other': 'Pembayaran Lain',
+                                'stok': 'Stok',
+                                'stok_other': 'Stok Lain',
+                                'keterangan_tambahan': 'Keterangan Tambahan',
+                                'items': 'Items'
+                            };
+
+                            const formattedChanges = changes.map(change => changeLabels[change] || change).join(', ');
+                            changesHtml = `<div class="text-muted small mt-1">Perubahan: ${formattedChanges}</div>`;
+                        }
+
                         html += `
                             <a href="${actionUrl}" class="dropdown-item notification-item ${itemClass}" data-id="${notification.id}">
                                 <div class="d-flex align-items-center">
@@ -249,6 +274,7 @@
                                     <div>
                                         <div class="text-muted small">${notification.time_ago}</div>
                                         <div>${notification.message}</div>
+                                        ${changesHtml}
                                     </div>
                                 </div>
                             </a>
@@ -309,6 +335,14 @@
                 .then(data => {
                     if (data.success) {
                         loadNotifications(); // Reload notifications
+                        // Close the dropdown after marking all as read
+                        const dropdown = document.getElementById('notification-dropdown');
+                        if (dropdown && dropdown.classList.contains('show')) {
+                            const toggle = document.getElementById('notification-toggle');
+                            if (toggle) {
+                                toggle.click();
+                            }
+                        }
                     }
                 })
                 .catch(error => console.error('Error marking all notifications as read:', error));

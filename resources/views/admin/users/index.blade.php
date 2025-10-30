@@ -36,7 +36,7 @@
                     </div>
                 @endif
 
-                <div class="table-responsive">
+                <div class="table-responsive draggable-table">
                     <table class="table table-vcenter">
                         <thead>
                             <tr>
@@ -135,7 +135,7 @@
                                             </button>
                                         </form>
                                         @if($user->roles->count() > 0)
-                                            <form method="POST" action="{{ route('admin.users.remove-role', $user) }}" class="d-inline">
+                                            <form method="POST" action="{{ route('admin.users.remove-role', $user) }}" class="d-inline mr-2">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-warning btn-sm">
@@ -143,6 +143,13 @@
                                                 </button>
                                             </form>
                                         @endif
+                                        <form method="POST" action="{{ route('admin.users.delete', $user) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user? This will permanently delete the user and all associated data including quotations, files, and records. This action cannot be undone.')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                Delete User
+                                            </button>
+                                        </form>
                                     @else
                                         <span class="text-muted">Full Access</span>
                                     @endif
@@ -161,4 +168,50 @@
         </div>
     </div>
 </div>
+<style>
+.draggable-table {
+    overflow-x: auto;
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable-table:active {
+    cursor: grabbing;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Draggable table functionality
+    const draggableTable = document.querySelector('.draggable-table');
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    draggableTable.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX - draggableTable.offsetLeft;
+        scrollLeft = draggableTable.scrollLeft;
+        draggableTable.style.cursor = 'grabbing';
+    });
+
+    draggableTable.addEventListener('mouseleave', () => {
+        isDragging = false;
+        draggableTable.style.cursor = 'grab';
+    });
+
+    draggableTable.addEventListener('mouseup', () => {
+        isDragging = false;
+        draggableTable.style.cursor = 'grab';
+    });
+
+    draggableTable.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - draggableTable.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll speed multiplier
+        draggableTable.scrollLeft = scrollLeft - walk;
+    });
+});
+</script>
 @endsection

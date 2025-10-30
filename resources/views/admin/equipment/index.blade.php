@@ -41,7 +41,7 @@
 
 
 
-                    <div class="table-responsive">
+                    <div class="table-responsive draggable-table">
                         <table class="table table-vcenter table-mobile-md card-table">
                             <thead>
                                 <tr>
@@ -283,6 +283,80 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Error loading equipment data. Please try again.');
                 });
         });
+    });
+});
+</script>
+<style>
+.draggable-table {
+    overflow-x: auto;
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable-table:active {
+    cursor: grabbing;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle edit button clicks
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const equipmentId = this.getAttribute('data-id');
+
+            // Fetch equipment data
+            fetch(`/admin/equipment/${equipmentId}/edit`)
+                .then(response => response.json())
+                .then(data => {
+                    // Populate edit form
+                    document.getElementById('edit_nama_alat').value = data.nama_alat;
+                    document.getElementById('edit_tipe_alat').value = data.tipe_alat;
+                    document.getElementById('edit_merk').value = data.merk;
+                    document.getElementById('edit_part_number').value = data.part_number;
+                    document.getElementById('edit_harga_retail').value = data.harga_retail || '';
+                    document.getElementById('edit_harga_inaproc').value = data.harga_inaproc || '';
+                    document.getElementById('edit_harga_sebelum_ppn').value = data.harga_sebelum_ppn || '';
+
+                    // Update form action
+                    document.getElementById('editForm').action = `/admin/equipment/${equipmentId}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching equipment data:', error);
+                    alert('Error loading equipment data. Please try again.');
+                });
+        });
+    });
+
+    // Draggable table functionality
+    const draggableTable = document.querySelector('.draggable-table');
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    draggableTable.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX - draggableTable.offsetLeft;
+        scrollLeft = draggableTable.scrollLeft;
+        draggableTable.style.cursor = 'grabbing';
+    });
+
+    draggableTable.addEventListener('mouseleave', () => {
+        isDragging = false;
+        draggableTable.style.cursor = 'grab';
+    });
+
+    draggableTable.addEventListener('mouseup', () => {
+        isDragging = false;
+        draggableTable.style.cursor = 'grab';
+    });
+
+    draggableTable.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - draggableTable.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll speed multiplier
+        draggableTable.scrollLeft = scrollLeft - walk;
     });
 });
 </script>

@@ -15,7 +15,7 @@ class NotificationController extends Controller
         $user = $request->user();
         $notifications = $user->notifications()
             ->orderBy('created_at', 'desc')
-            ->take(10)
+            ->take(3)
             ->get()
             ->map(function ($notification) {
                 return [

@@ -70,7 +70,7 @@ class QuotationUpdatedNotification extends Notification implements ShouldQueue
         return [
             'type' => 'quotation_updated',
             'message' => 'Penawaran diperbarui untuk customer ' . $this->quotation->nama_customer . ' oleh ' . $updaterText . $changesText,
-            'action_url' => $this->updaterRole === 'sap' ? route('sap.log-perubahan') : route('sap.daftar-penawaran'),
+            'action_url' => route('sap.log-perubahan'),
             'quotation_id' => $this->quotation->id,
             'changes' => $this->changes,
         ];

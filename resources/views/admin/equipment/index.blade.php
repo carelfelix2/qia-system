@@ -30,6 +30,10 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><line x1="9" y1="9" x2="10" y2="9" /><line x1="9" y1="13" x2="15" y2="13" /><line x1="9" y1="17" x2="15" y2="17" /></svg>
                             Import Excel
                         </button>
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="4" y1="7" x2="20" y2="7" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                            Delete All Equipment
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -41,7 +45,7 @@
 
 
 
-                    <div class="table-responsive draggable-table">
+                    <div class="table-responsive">
                         <table class="table table-vcenter table-mobile-md card-table table-hover">
                             <thead>
                                 <tr>
@@ -263,6 +267,28 @@
     </div>
 </div>
 
+<!-- Delete All Modal -->
+<div class="modal modal-blur fade" id="deleteAllModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete All Equipment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete all equipment data? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn me-auto" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ route('admin.equipment.destroy-all') }}" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Delete All</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Handle edit button clicks
@@ -294,17 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-<style>
-.draggable-table {
-    overflow-x: auto;
-    cursor: grab;
-    user-select: none;
-}
 
-.draggable-table:active {
-    cursor: grabbing;
-}
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -336,36 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Draggable table functionality
-    const draggableTable = document.querySelector('.draggable-table');
-    let isDragging = false;
-    let startX;
-    let scrollLeft;
 
-    draggableTable.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.pageX - draggableTable.offsetLeft;
-        scrollLeft = draggableTable.scrollLeft;
-        draggableTable.style.cursor = 'grabbing';
-    });
-
-    draggableTable.addEventListener('mouseleave', () => {
-        isDragging = false;
-        draggableTable.style.cursor = 'grab';
-    });
-
-    draggableTable.addEventListener('mouseup', () => {
-        isDragging = false;
-        draggableTable.style.cursor = 'grab';
-    });
-
-    draggableTable.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.pageX - draggableTable.offsetLeft;
-        const walk = (x - startX) * 2; // Scroll speed multiplier
-        draggableTable.scrollLeft = scrollLeft - walk;
-    });
 });
 </script>
 @endsection

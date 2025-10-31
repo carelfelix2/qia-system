@@ -83,4 +83,11 @@ class EquipmentController extends Controller
 
         return response()->json($equipment);
     }
+
+    public function destroyAll()
+    {
+        Equipment::truncate();
+
+        return redirect()->back()->with('success', 'All equipment data has been deleted successfully.');
+    }
 }

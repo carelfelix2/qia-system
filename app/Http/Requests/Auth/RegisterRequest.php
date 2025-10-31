@@ -38,20 +38,9 @@ class RegisterRequest extends FormRequest
             'password' => [
                 'required',
                 'string',
-                'min:8',
+                'min:6',
                 'max:64',
                 'confirmed',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols(),
-                'not_regex:/123456|abcdef|password|qwerty/i',
-                function ($attribute, $value, $fail) {
-                    if (str_contains(strtolower($value), strtolower($this->input('username')))) {
-                        $fail('Password tidak boleh mengandung username.');
-                    }
-                },
             ],
             'password_confirmation' => ['required', 'string'],
             'requested_role' => ['required', 'string', 'in:admin,sales,teknisi,inputer_sap,inputer_spk'],
@@ -86,14 +75,10 @@ class RegisterRequest extends FormRequest
 
             'password.required' => 'Password wajib diisi.',
             'password.string' => 'Password harus berupa teks.',
-            'password.min' => 'Password minimal 8 karakter.',
+            'password.min' => 'Password minimal 6 karakter.',
             'password.max' => 'Password maksimal 64 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
-            'password.letters' => 'Password harus mengandung minimal 1 huruf.',
-            'password.mixed_case' => 'Password harus mengandung minimal 1 huruf besar dan 1 huruf kecil.',
-            'password.numbers' => 'Password harus mengandung minimal 1 angka.',
-            'password.symbols' => 'Password harus mengandung minimal 1 simbol spesial (!@#$%^&*).',
-            'password.not_regex' => 'Password tidak boleh menggunakan urutan umum seperti 123456, abcdef, password, atau qwerty.',
+
 
             'password_confirmation.required' => 'Konfirmasi password wajib diisi.',
             'password_confirmation.string' => 'Konfirmasi password harus berupa teks.',

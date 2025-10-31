@@ -78,9 +78,12 @@
                                                     <h6 class="card-title mb-0">Manual Input Equipment</h6>
                                                 </div>
                                                 <div class="card-body">
-                                                    <div class="row" id="equipment_form">
+                                                <div class="row" id="equipment_form">
                                                         <div class="col-md-2">
                                                             <input type="text" id="nama_alat_input" class="form-control" placeholder="Nama Alat">
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <input type="number" id="quantity_input" class="form-control" placeholder="Qty" min="1" value="1">
                                                         </div>
                                                         <div class="col-md-2">
                                                             <input type="text" id="tipe_alat_input" class="form-control" placeholder="Tipe Alat">
@@ -100,7 +103,7 @@
                                                                 <option value="manual">Manual</option>
                                                             </select>
                                                         </div>
-                                                        <div class="col-md-2">
+                                                        <div class="col-md-1">
                                                             <input type="number" id="harga_input" class="form-control" placeholder="Harga" step="0.01" min="0">
                                                         </div>
                                                     </div>
@@ -113,6 +116,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Nama Alat</th>
+                                                        <th>Qty</th>
                                                         <th>Tipe Alat</th>
                                                         <th>Merk</th>
                                                         <th>Part Number</th>
@@ -247,13 +251,14 @@
 
         document.getElementById('add_equipment_btn').addEventListener('click', function() {
             const namaAlat = document.getElementById('nama_alat_input').value.trim();
+            const quantity = document.getElementById('quantity_input').value.trim();
             const tipeAlat = document.getElementById('tipe_alat_input').value.trim();
             const merk = document.getElementById('merk_input').value.trim();
             const partNumber = document.getElementById('part_number_input').value.trim();
             const kategoriHarga = document.getElementById('kategori_harga_input').value;
             const harga = document.getElementById('harga_input').value.trim();
 
-            if (!namaAlat || !tipeAlat || !partNumber || !kategoriHarga || !harga) {
+            if (!namaAlat || !quantity || !tipeAlat || !partNumber || !kategoriHarga || !harga) {
                 alert('Please fill in all required fields.');
                 return;
             }
@@ -263,6 +268,7 @@
             const row = tableBody.insertRow();
             row.innerHTML = `
                 <td>${namaAlat}</td>
+                <td><input type="number" class="form-control" name="items[${equipmentIndex}][quantity]" value="${quantity}" min="1" required></td>
                 <td>${tipeAlat}</td>
                 <td>${merk}</td>
                 <td>${partNumber}</td>
@@ -282,6 +288,7 @@
             const hiddenContainer = document.getElementById('hidden_inputs_container');
             hiddenContainer.innerHTML += `
                 <input type="hidden" name="items[${equipmentIndex}][nama_alat]" value="${namaAlat}">
+                <input type="hidden" name="items[${equipmentIndex}][quantity]" value="${quantity}">
                 <input type="hidden" name="items[${equipmentIndex}][tipe_alat]" value="${tipeAlat}">
                 <input type="hidden" name="items[${equipmentIndex}][merk]" value="${merk}">
                 <input type="hidden" name="items[${equipmentIndex}][part_number]" value="${partNumber}">
@@ -291,6 +298,7 @@
 
             // Clear input fields
             document.getElementById('nama_alat_input').value = '';
+            document.getElementById('quantity_input').value = '1';
             document.getElementById('tipe_alat_input').value = '';
             document.getElementById('merk_input').value = '';
             document.getElementById('part_number_input').value = '';
@@ -336,14 +344,16 @@
 
                 // Re-add hidden inputs
                 const namaAlat = cells[0].textContent;
-                const tipeAlat = cells[1].textContent;
-                const merk = cells[2].textContent;
-                const partNumber = cells[3].textContent;
-                const kategoriHarga = cells[4].textContent;
-                const harga = cells[5].querySelector('input').value;
+                const quantity = cells[1].querySelector('input').value;
+                const tipeAlat = cells[2].textContent;
+                const merk = cells[3].textContent;
+                const partNumber = cells[4].textContent;
+                const kategoriHarga = cells[5].textContent;
+                const harga = cells[6].querySelector('input').value;
 
                 hiddenContainer.innerHTML += `
                     <input type="hidden" name="items[${newIndex}][nama_alat]" value="${namaAlat}">
+                    <input type="hidden" name="items[${newIndex}][quantity]" value="${quantity}">
                     <input type="hidden" name="items[${newIndex}][tipe_alat]" value="${tipeAlat}">
                     <input type="hidden" name="items[${newIndex}][merk]" value="${merk}">
                     <input type="hidden" name="items[${newIndex}][part_number]" value="${partNumber}">

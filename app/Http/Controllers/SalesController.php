@@ -30,6 +30,7 @@ class SalesController extends Controller
             'diskon' => 'nullable|numeric|min:0|max:100',
             'items' => 'required|array|min:1',
             'items.*.nama_alat' => 'required|string|max:255',
+            'items.*.quantity' => 'required|integer|min:1',
             'items.*.tipe_alat' => 'required|string|max:255',
             'items.*.merk' => 'nullable|string|max:255',
             'items.*.part_number' => 'required|string|max:255',
@@ -115,6 +116,7 @@ class SalesController extends Controller
             'items' => $quotation->quotationItems->map(function ($item) {
                 return [
                     'nama_alat' => $item->nama_alat,
+                    'quantity' => $item->quantity,
                     'tipe_alat' => $item->tipe_alat,
                     'merk' => $item->merk,
                     'part_number' => $item->part_number,
@@ -137,6 +139,7 @@ class SalesController extends Controller
             'diskon' => 'nullable|numeric|min:0|max:100',
             'items' => 'required|array|min:1',
             'items.*.nama_alat' => 'required|string|max:255',
+            'items.*.quantity' => 'required|integer|min:1',
             'items.*.tipe_alat' => 'required|string|max:255',
             'items.*.merk' => 'nullable|string|max:255',
             'items.*.part_number' => 'required|string|max:255',

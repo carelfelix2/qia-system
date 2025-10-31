@@ -55,15 +55,11 @@
                                                         </th>
                                                         <th>Tanggal</th>
                                                         <th>No SAP</th>
-                                                        <th>Sales Person</th>
-                                                        <th>Jenis Penawaran</th>
+                                                        <th>Nama Sales</th>
                                                         <th>Nama Customer</th>
-                                                        <th>Items</th>
-                                                        <th>Pembayaran</th>
-                                                        <th>Stok Barang</th>
                                                         <th>Status</th>
-                                                        <th>Lampiran</th>
-                                                        <th>Aksi</th>
+                                                        <th>Detail Penawaran</th>
+                                                        <th>Input SQ</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -83,31 +79,7 @@
                                                             @endif
                                                         </td>
                                                         <td>{{ $quotation->sales_person }}</td>
-                                                        <td>{{ $quotation->jenis_penawaran }}</td>
                                                         <td>{{ $quotation->nama_customer }}</td>
-                                                        <td>
-                                                            @if($quotation->quotationItems->count() > 0)
-                                                                <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#items-{{ $quotation->id }}" aria-expanded="false" aria-controls="items-{{ $quotation->id }}">
-                                                                    Tampilkan Alat ({{ $quotation->quotationItems->count() }})
-                                                                </button>
-                                                            @else
-                                                                -
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @if($quotation->pembayaran === 'Manual')
-                                                                {{ $quotation->pembayaran_other }}
-                                                            @else
-                                                                {{ $quotation->pembayaran }}
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @if($quotation->stok === 'Manual')
-                                                                {{ $quotation->stok_other }}
-                                                            @else
-                                                                {{ $quotation->stok }}
-                                                            @endif
-                                                        </td>
                                                         <td>
                                                             @if($quotation->status === 'selesai')
                                                                 <span class="badge bg-success me-1"></span>Selesai
@@ -116,21 +88,14 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if($quotation->attachment_file)
-                                                                <a href="{{ Storage::url($quotation->attachment_file) }}" target="_blank" class="btn btn-sm btn-outline-info">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                                                                        <line x1="9" y1="9" x2="10" y2="9" />
-                                                                        <line x1="9" y1="13" x2="15" y2="13" />
-                                                                        <line x1="9" y1="17" x2="15" y2="17" />
-                                                                    </svg>
-                                                                    Lihat File
-                                                                </a>
-                                                            @else
-                                                                <span class="text-muted">-</span>
-                                                            @endif
+                                                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailModal-{{ $quotation->id }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                    <circle cx="12" cy="12" r="2" />
+                                                                    <path d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7" />
+                                                                </svg>
+                                                                Detail
+                                                            </button>
                                                         </td>
                                                         <td>
                                                             @if($quotation->status === 'proses')
@@ -159,83 +124,7 @@
                                                             @endif
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td colspan="16" class="p-0">
-                                                            <div class="collapse" id="items-{{ $quotation->id }}">
-                                                                <div class="card card-body border-0">
-                                                                    <h6>Daftar Alat:</h6>
-                                                                    <div class="table-responsive">
-                                                                        <table class="table table-sm table-daftar-alat">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th>Nama Alat</th>
-                                                                                    <th>Tipe Alat</th>
-                                                                                    <th>Merk</th>
-                                                                                    <th>Part Number</th>
-                                                                                    <th>Kategori Harga</th>
-                                                                                    <th>Harga</th>
-                                                                                    <th>Diskon</th>
-                                                                                    <th>PPN</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                @foreach($quotation->quotationItems as $item)
-                                                                                <tr>
-                                                                                    <td>{{ $item->nama_alat }}</td>
-                                                                                    <td>{{ $item->tipe_alat }}</td>
-                                                                                    <td>{{ $item->merk }}</td>
-                                                                                    <td>{{ $item->part_number }}</td>
-                                                                                    <td>{{ $item->kategori_harga }}</td>
-                                                                                    <td>Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                                                                                    <td>{{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}</td>
-                                                                                    <td>{{ $item->ppn }}</td>
-                                                                                </tr>
-                                                                                @endforeach
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                    <div class="row mt-3">
-                                                                        <div class="col-md-6">
-                                                                            @if($quotation->keterangan_tambahan)
-                                                                                <h6>Keterangan Tambahan:</h6>
-                                                                                <p class="text-muted">{{ $quotation->keterangan_tambahan }}</p>
-                                                                            @else
-                                                                                <h6>Keterangan Tambahan:</h6>
-                                                                                <p class="text-muted">-</p>
-                                                                            @endif
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            @if($quotation->poFiles->count() > 0)
-                                                                                <h6>File PO:</h6>
-                                                                                @foreach($quotation->poFiles as $poFile)
-                                                                                <div class="d-flex align-items-center mb-2">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-2 text-primary" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                                                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                                                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                                                                                        <line x1="9" y1="9" x2="10" y2="9" />
-                                                                                        <line x1="9" y1="13" x2="15" y2="13" />
-                                                                                        <line x1="9" y1="17" x2="15" y2="17" />
-                                                                                    </svg>
-                                                                                    <div>
-                                                                                        <a href="{{ Storage::url($poFile->file_path) }}" target="_blank" class="text-decoration-none">
-                                                                                            {{ basename($poFile->file_path) }}
-                                                                                        </a>
-                                                                                        <br>
-                                                                                        <small class="text-muted">Uploaded by {{ $poFile->uploader->name }} on {{ $poFile->created_at->format('d/m/Y H:i') }}</small>
-                                                                                    </div>
-                                                                                </div>
-                                                                                @endforeach
-                                                                            @else
-                                                                                <h6>File PO:</h6>
-                                                                                <p class="text-muted">-</p>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+
                                                     @endforeach
                                                 </tbody>
                                             </table>
@@ -306,33 +195,36 @@
                             <div class="card-header">
                                 <h6 class="card-title mb-0">Manual Input Equipment</h6>
                             </div>
-                            <div class="card-body">
-                                <div class="row" id="edit_equipment_form" style="display: flex;">
-                                    <div class="col-md-2">
-                                        <input type="text" id="edit_nama_alat_input" class="form-control" placeholder="Nama Alat">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" id="edit_tipe_alat_input" class="form-control" placeholder="Tipe Alat">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" id="edit_merk_input" class="form-control" placeholder="Merk">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" id="edit_part_number_input" class="form-control" placeholder="Part Number Alat">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <select id="edit_kategori_harga_input" class="form-select">
-                                            <option value="">Kategori Harga</option>
-                                            <option value="harga_retail">Harga Retail</option>
-                                            <option value="harga_inaproc">Harga Inaproc</option>
-                                            <option value="harga_sebelum_ppn">Harga Sebelum PPN</option>
-                                            <option value="manual">Manual</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="number" id="edit_harga_input" class="form-control" placeholder="Harga" step="0.01" min="0">
-                                    </div>
-                                </div>
+                        <div class="card-body">
+                        <div class="row" id="edit_equipment_form" style="display: flex;">
+                            <div class="col-md-2">
+                                <input type="text" id="edit_nama_alat_input" class="form-control" placeholder="Nama Alat">
+                            </div>
+                            <div class="col-md-1">
+                                <input type="number" id="edit_quantity_input" class="form-control" placeholder="Qty" min="1" value="1">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="edit_tipe_alat_input" class="form-control" placeholder="Tipe Alat">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="edit_merk_input" class="form-control" placeholder="Merk">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="edit_part_number_input" class="form-control" placeholder="Part Number Alat">
+                            </div>
+                            <div class="col-md-2">
+                                <select id="edit_kategori_harga_input" class="form-select">
+                                    <option value="">Kategori Harga</option>
+                                    <option value="harga_retail">Harga Retail</option>
+                                    <option value="harga_inaproc">Harga Inaproc</option>
+                                    <option value="harga_sebelum_ppn">Harga Sebelum PPN</option>
+                                    <option value="manual">Manual</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <input type="number" id="edit_harga_input" class="form-control" placeholder="Harga" step="0.01" min="0">
+                            </div>
+                        </div>
                             </div>
                         </div>
                     </div>
@@ -341,6 +233,7 @@
                             <thead>
                                 <tr>
                                     <th>Nama Alat</th>
+                                    <th>Quantity</th>
                                     <th>Tipe Alat</th>
                                     <th>Merk</th>
                                     <th>Part Number</th>
@@ -421,6 +314,169 @@
     </div>
 </div>
 
+<!-- Detail Penawaran Modal -->
+@foreach($quotations as $quotation)
+<div class="modal fade" id="detailModal-{{ $quotation->id }}" tabindex="-1" aria-labelledby="detailModalLabel-{{ $quotation->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel-{{ $quotation->id }}">Detail Penawaran - {{ $quotation->nama_customer }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Sales Person:</strong> {{ $quotation->sales_person }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Jenis Penawaran:</strong> {{ $quotation->jenis_penawaran }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Format Layout:</strong> {{ $quotation->format_layout }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Status:</strong>
+                        @if($quotation->status === 'selesai')
+                            <span class="badge bg-success">Selesai</span>
+                        @else
+                            <span class="badge bg-warning">Proses</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Pembayaran:</strong>
+                        @if($quotation->pembayaran === 'Manual')
+                            {{ $quotation->pembayaran_other }}
+                        @else
+                            {{ $quotation->pembayaran }}
+                        @endif
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Stok Barang:</strong>
+                        @if($quotation->stok === 'Manual')
+                            {{ $quotation->stok_other }}
+                        @else
+                            {{ $quotation->stok }}
+                        @endif
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Diskon:</strong> {{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Alamat Customer:</strong> {{ $quotation->alamat_customer }}
+                    </div>
+                </div>
+
+                @if($quotation->quotationItems->count() > 0)
+                    <h6>Daftar Alat:</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Nama Alat</th>
+                                    <th>Quantity</th>
+                                    <th>Tipe Alat</th>
+                                    <th>Merk</th>
+                                    <th>Part Number</th>
+                                    <th>Kategori Harga</th>
+                                    <th>Harga</th>
+                                    <th>Diskon</th>
+                                    <th>PPN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($quotation->quotationItems as $item)
+                                <tr>
+                                    <td>{{ $item->nama_alat }}</td>
+                                    <td>{{ $item->quantity }}</td>
+                                    <td>{{ $item->tipe_alat }}</td>
+                                    <td>{{ $item->merk }}</td>
+                                    <td>{{ $item->part_number }}</td>
+                                    <td>{{ $item->kategori_harga }}</td>
+                                    <td>Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
+                                    <td>{{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}</td>
+                                    <td>{{ $item->ppn }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <p class="text-muted">Tidak ada alat dalam penawaran ini.</p>
+                @endif
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        @if($quotation->keterangan_tambahan)
+                            <h6>Keterangan Tambahan:</h6>
+                            <p class="text-muted">{{ $quotation->keterangan_tambahan }}</p>
+                        @else
+                            <h6>Keterangan Tambahan:</h6>
+                            <p class="text-muted">-</p>
+                        @endif
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Lampiran File:</h6>
+                        @if($quotation->attachment_file)
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-2 text-primary" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                    <line x1="9" y1="9" x2="10" y2="9" />
+                                    <line x1="9" y1="13" x2="15" y2="13" />
+                                    <line x1="9" y1="17" x2="15" y2="17" />
+                                </svg>
+                                <div>
+                                    <a href="{{ Storage::url($quotation->attachment_file) }}" target="_blank" class="text-decoration-none">
+                                        {{ basename($quotation->attachment_file) }}
+                                    </a>
+                                    <br>
+                                    <small class="text-muted">Klik untuk melihat/download file</small>
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-muted mb-0">Belum ada file lampiran</p>
+                        @endif
+                    </div>
+                </div>
+
+                @if($quotation->poFiles->count() > 0)
+                    <h6>File PO:</h6>
+                    @foreach($quotation->poFiles as $poFile)
+                    <div class="d-flex align-items-center mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-2 text-primary" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                            <line x1="9" y1="9" x2="10" y2="9" />
+                            <line x1="9" y1="13" x2="15" y2="13" />
+                            <line x1="9" y1="17" x2="15" y2="17" />
+                        </svg>
+                        <div>
+                            <a href="{{ Storage::url($poFile->file_path) }}" target="_blank" class="text-decoration-none">
+                                {{ basename($poFile->file_path) }}
+                            </a>
+                            <br>
+                            <small class="text-muted">Uploaded by {{ $poFile->uploader->name }} on {{ $poFile->created_at->format('d/m/Y H:i') }}</small>
+                        </div>
+                    </div>
+                    @endforeach
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
 <!-- Upload PO Modal -->
 <div class="modal fade" id="uploadPoModal" tabindex="-1" aria-labelledby="uploadPoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -451,11 +507,14 @@
 .draggable-table {
     overflow-x: auto;
     cursor: grab;
-    user-select: none;
 }
 
 .draggable-table:active {
     cursor: grabbing;
+}
+
+.draggable-table .table {
+    user-select: text;
 }
 </style>
 
@@ -583,6 +642,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const row = tableBody.insertRow();
                     row.innerHTML = `
                         <td>${item.nama_alat}</td>
+                        <td><input type="number" class="form-control" name="items[${index}][quantity]" value="${item.quantity}" min="1" required></td>
                         <td>${item.tipe_alat}</td>
                         <td>${item.merk || ''}</td>
                         <td>${item.part_number}</td>
@@ -667,6 +727,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function editFillEquipmentForm(item) {
         document.getElementById('edit_nama_alat_input').value = item.nama_alat || '';
+        document.getElementById('edit_quantity_input').value = item.quantity || 1;
         document.getElementById('edit_tipe_alat_input').value = item.tipe_alat || '';
         document.getElementById('edit_merk_input').value = item.merk || '';
         document.getElementById('edit_part_number_input').value = item.part_number || '';
@@ -697,13 +758,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('edit_add_equipment_btn').addEventListener('click', function() {
         const namaAlat = document.getElementById('edit_nama_alat_input').value.trim();
+        const quantity = document.getElementById('edit_quantity_input').value.trim();
         const tipeAlat = document.getElementById('edit_tipe_alat_input').value.trim();
         const merk = document.getElementById('edit_merk_input').value.trim();
         const partNumber = document.getElementById('edit_part_number_input').value.trim();
         const kategoriHarga = document.getElementById('edit_kategori_harga_input').value;
         const harga = document.getElementById('edit_harga_input').value.trim();
 
-        if (!namaAlat || !tipeAlat || !partNumber || !kategoriHarga || !harga) {
+        if (!namaAlat || !quantity || !tipeAlat || !partNumber || !kategoriHarga || !harga) {
             alert('Please fill in all required fields.');
             return;
         }
@@ -715,6 +777,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const row = tableBody.insertRow();
         row.innerHTML = `
             <td>${namaAlat}</td>
+            <td><input type="number" class="form-control" name="items[${index}][quantity]" value="${quantity}" min="1" required></td>
             <td>${tipeAlat}</td>
             <td>${merk}</td>
             <td>${partNumber}</td>
@@ -740,6 +803,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Clear input fields
         document.getElementById('edit_nama_alat_input').value = '';
+        document.getElementById('edit_quantity_input').value = '1';
         document.getElementById('edit_tipe_alat_input').value = '';
         document.getElementById('edit_merk_input').value = '';
         document.getElementById('edit_part_number_input').value = '';
@@ -781,10 +845,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const namaAlat = cells[0].textContent;
-            const tipeAlat = cells[1].textContent;
-            const merk = cells[2].textContent;
-            const partNumber = cells[3].textContent;
-            const kategoriHarga = cells[4].textContent;
+            const tipeAlat = cells[2].textContent;
+            const merk = cells[3].textContent;
+            const partNumber = cells[4].textContent;
+            const kategoriHarga = cells[5].textContent;
 
             hiddenContainer.innerHTML += `
                 <input type="hidden" name="items[${newIndex}][nama_alat]" value="${namaAlat}">

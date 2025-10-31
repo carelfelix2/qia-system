@@ -61,33 +61,11 @@ test('password validation fails for invalid formats', function (array $invalidPa
     $response->assertSessionHasErrors(['password']);
     $response->assertSessionHasErrors(['password' => $invalidPassword['error']]);
 })->with([
-    ['password' => 'short', 'error' => 'Password minimal 8 karakter.'],
+    ['password' => 'short', 'error' => 'Password minimal 6 karakter.'],
     ['password' => str_repeat('a', 65), 'error' => 'Password maksimal 64 karakter.'],
-    ['password' => 'password123!', 'error' => 'Password harus mengandung minimal 1 huruf besar dan 1 huruf kecil.'],
-    ['password' => 'Password!', 'error' => 'Password harus mengandung minimal 1 angka.'],
-    ['password' => 'Password123', 'error' => 'Password harus mengandung minimal 1 simbol spesial (!@#$%^&*).'],
-    ['password' => '12345678', 'error' => 'Password harus mengandung minimal 1 huruf.'],
-    ['password' => 'password123!', 'error' => 'Password harus mengandung minimal 1 huruf besar dan 1 huruf kecil.'],
-    ['password' => 'Password123!', 'error' => 'Password harus mengandung minimal 1 angka.'],
-    ['password' => 'Password123', 'error' => 'Password harus mengandung minimal 1 simbol spesial (!@#$%^&*).'],
-    ['password' => '123456789', 'error' => 'Password tidak boleh menggunakan urutan umum seperti 123456, abcdef, password, atau qwerty.'],
-    ['password' => 'abcdefghi', 'error' => 'Password tidak boleh menggunakan urutan umum seperti 123456, abcdef, password, atau qwerty.'],
-    ['password' => 'password', 'error' => 'Password tidak boleh menggunakan urutan umum seperti 123456, abcdef, password, atau qwerty.'],
-    ['password' => 'qwerty', 'error' => 'Password tidak boleh menggunakan urutan umum seperti 123456, abcdef, password, atau qwerty.'],
 ]);
 
-test('password cannot contain username', function () {
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'username' => 'testuser',
-        'email' => 'test@example.com',
-        'password' => 'testuser123!',
-        'password_confirmation' => 'testuser123!',
-        'requested_role' => 'sales',
-    ]);
 
-    $response->assertSessionHasErrors(['password' => 'Password tidak boleh mengandung username.']);
-});
 
 test('username must be unique', function () {
     // Create a user first

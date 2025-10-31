@@ -50,6 +50,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/equipment/{equipment}/edit', [App\Http\Controllers\EquipmentController::class, 'edit'])->name('admin.equipment.edit');
     Route::put('/admin/equipment/{equipment}', [App\Http\Controllers\EquipmentController::class, 'update'])->name('admin.equipment.update');
     Route::post('/admin/equipment/import', [App\Http\Controllers\EquipmentController::class, 'import'])->name('admin.equipment.import');
+    Route::post('/admin/equipment/destroy-all', [App\Http\Controllers\EquipmentController::class, 'destroyAll'])->name('admin.equipment.destroy-all');
 });
 
 Route::middleware(['auth', 'role:sales'])->group(function () {

@@ -10,6 +10,7 @@ class QuotationItem extends Model
     protected $fillable = [
         'quotation_id',
         'nama_alat',
+        'quantity',
         'tipe_alat',
         'merk',
         'part_number',
@@ -20,6 +21,7 @@ class QuotationItem extends Model
 
     protected $casts = [
         'harga' => 'decimal:2',
+        'quantity' => 'integer',
     ];
 
     public function quotation(): BelongsTo

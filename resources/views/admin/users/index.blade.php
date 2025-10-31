@@ -40,6 +40,7 @@
                     <table class="table table-vcenter table-hover">
                         <thead>
                             <tr>
+                                <th><input type="checkbox" id="select-all"></th>
                                 <th>Tanggal</th>
                                 <th>Nama</th>
                                 <th>Email</th>
@@ -53,6 +54,7 @@
                         <tbody>
                             @foreach($users as $user)
                             <tr data-user-id="{{ $user->id }}" @if(request('user') == $user->id) class="table-warning" @endif>
+                                <td><input type="checkbox" class="user-checkbox" value="{{ $user->id }}"></td>
                                 <td>
                                     {{ $user->registration_date ? $user->registration_date->format('d/m/Y H:i') : '-' }}
                                 </td>
@@ -107,53 +109,72 @@
                                     @endif
                                 </td>
                                 <td>
-                                @if($user->status === 'pending')
-                                    <form method="POST" action="{{ route('admin.users.approve', $user) }}" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success btn-sm mr-2">
-                                            Terima
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Aksi
                                         </button>
-                                    </form>
-                                    <form method="POST" action="{{ route('admin.users.reject', $user) }}" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            Tolak
-                                        </button>
-                                    </form>
-                                @else
-                                    @if(!$user->hasRole('admin'))
-                                        <form method="POST" action="{{ route('admin.users.assign-role', $user) }}" class="d-inline mr-2">
-                                            @csrf
-                                            <select name="role" class="form-select form-select-sm d-inline w-auto mr-1">
-                                                <option value="">Pilih Role</option>
-                                                @foreach($roles as $role)
-                                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <button type="submit" class="btn btn-primary btn-sm">
-                                                Assign
-                                            </button>
-                                        </form>
-                                        @if($user->roles->count() > 0)
-                                            <form method="POST" action="{{ route('admin.users.remove-role', $user) }}" class="d-inline mr-2">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-warning btn-sm">
-                                                    Remove Role
-                                                </button>
-                                            </form>
-                                        @endif
-                                        <form method="POST" action="{{ route('admin.users.delete', $user) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user? This will permanently delete the user and all associated data including quotations, files, and records. This action cannot be undone.')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                Delete User
-                                            </button>
-                                        </form>
-                                    @else
-                                        <span class="text-muted">Full Access</span>
-                                    @endif
-                                @endif
+                                        <ul class="dropdown-menu">
+                                            @if($user->status === 'pending')
+                                                <li>
+                                                    <form method="POST" action="{{ route('admin.users.approve', $user) }}" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item btn btn-success btn-sm">
+                                                            Terima
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form method="POST" action="{{ route('admin.users.reject', $user) }}" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item btn btn-danger btn-sm">
+                                                            Tolak
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            @else
+                                                @if(!$user->hasRole('admin'))
+                                                    <li>
+                                                        <form method="POST" action="{{ route('admin.users.assign-role', $user) }}" class="d-inline">
+                                                            @csrf
+                                                            <div class="dropdown-item">
+                                                                <select name="role" class="form-select form-select-sm d-inline w-auto mr-1">
+                                                                    <option value="">Pilih Role</option>
+                                                                    @foreach($roles as $role)
+                                                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                                    Assign
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </li>
+                                                    @if($user->roles->count() > 0)
+                                                        <li>
+                                                            <form method="POST" action="{{ route('admin.users.remove-role', $user) }}" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="dropdown-item btn btn-warning btn-sm">
+                                                                    Remove Role
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    @endif
+                                                    <li>
+                                                        <form method="POST" action="{{ route('admin.users.delete', $user) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user? This will permanently delete the user and all associated data including quotations, files, and records. This action cannot be undone.')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item btn btn-danger btn-sm">
+                                                                Delete User
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                @else
+                                                    <li><span class="dropdown-item text-muted">Full Access</span></li>
+                                                @endif
+                                            @endif
+                                        </ul>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -188,6 +209,16 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Select all checkbox functionality
+    const selectAllCheckbox = document.getElementById('select-all');
+    const userCheckboxes = document.querySelectorAll('.user-checkbox');
+
+    selectAllCheckbox.addEventListener('change', function() {
+        userCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    });
+
     // Draggable table functionality
     const draggableTable = document.querySelector('.draggable-table');
     let isDragging = false;

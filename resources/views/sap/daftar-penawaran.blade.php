@@ -62,7 +62,7 @@
                                     <td>{{ $quotation->sales_person }}</td>
                                     <td>{{ $quotation->nama_customer }}</td>
                                     <td>
-                                        <span class="badge {{ $quotation->status === 'selesai' ? 'bg-success' : 'bg-warning' }}">
+                                        <span class="badge {{ $quotation->status === 'selesai' ? 'bg-success' : 'bg-warning' }}  text-white">
                                             {{ ucfirst($quotation->status) }}
                                         </span>
                                     </td>
@@ -93,13 +93,13 @@
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="detailModalLabel-{{ $quotation->id }}">Detail Penawaran - {{ $quotation->nama_customer }}</h5>
+                                    <h5 class="modal-title" id="detailModalLabel-{{ $quotation->id }}">Detail Penawaran</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row mb-3">
                                         <div class="col-md-6">
-                                            <strong>Sales Person:</strong> {{ $quotation->sales_person }}
+                                            <strong>Nama Customer:</strong> {{ $quotation->nama_customer }}
                                         </div>
                                         <div class="col-md-6">
                                             <strong>Jenis Penawaran:</strong> {{ $quotation->jenis_penawaran }}
@@ -112,9 +112,9 @@
                                         <div class="col-md-6">
                                             <strong>Status:</strong>
                                             @if($quotation->status === 'selesai')
-                                                <span class="badge bg-success">Selesai</span>
+                                                <span class="badge bg-success text-white">Selesai</span>
                                             @else
-                                                <span class="badge bg-warning">Proses</span>
+                                                <span class="badge bg-warning text-white">Proses</span>
                                             @endif
                                         </div>
                                     </div>

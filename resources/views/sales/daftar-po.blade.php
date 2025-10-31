@@ -7,26 +7,29 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Daftar PO</h3>
-            </div>
-            <div class="card-body">
-                <!-- Search Form -->
+                                <!-- Search Form -->
                 <div class="mb-3 d-flex justify-content-between align-items-center">
-                    <form method="GET" action="{{ route('sales.daftar-po') }}" class="d-flex">
-                        <input type="text" name="search" class="form-control me-2" placeholder="Cari berdasarkan nama customer, SAP number, atau uploader..." value="{{ request('search') }}">
-                        <button type="submit" class="btn btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <circle cx="10" cy="10" r="7" />
-                                <line x1="21" y1="21" x2="15" y2="15" />
-                            </svg>
-                            Cari
-                        </button>
+                           <form method="GET" action="{{ route('sales.daftar-po') }}" class="d-flex" style="max-width: 350px;">
+            <input type="text" name="search" class="form-control me-2"
+                placeholder="Cari berdasarkan nama customer, SAP number, atau uploader..."
+                value="{{ request('search') }}">
+            <button type="submit" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24"
+                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="10" cy="10" r="7" />
+                    <line x1="21" y1="21" x2="15" y2="15" />
+                </svg>
+                Cari
+            </button>
                         @if(request('search'))
                             <a href="{{ route('sales.daftar-po') }}" class="btn btn-outline-secondary ms-2">Reset</a>
                         @endif
                     </form>
                 </div>
-
+            </div>
+            <div class="card-body" style="padding: 0;">
                 @if($poFiles->isEmpty())
                     <div class="text-center py-4">
                         <p class="text-muted">Belum ada file PO yang diupload.</p>

@@ -24,7 +24,7 @@
             <div class="card-header">
                 <h3 class="card-title">User Management</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: 0;">
                 @if(session('success'))
                     <div class="alert alert-success mb-4">
                         {{ session('success') }}

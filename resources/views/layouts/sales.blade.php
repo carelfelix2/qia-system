@@ -143,8 +143,6 @@
             <div class="row text-center align-items-center flex-row-reverse">
               <div class="col-lg-auto ms-lg-auto">
                 <ul class="list-inline list-inline-dots mb-0">
-                  <li class="list-inline-item"><a href="/" target="_blank" class="link-secondary" rel="noopener">Documentation</a></li>
-                  <li class="list-inline-item"><a href="/" class="link-secondary">License</a></li>
                   <li class="list-inline-item">
                     <a href="https://github.com/carelfelix2" target="_blank" class="link-secondary" rel="noopener">
                       <!-- Download SVG icon from http://tabler.io/icons/icon/heart -->

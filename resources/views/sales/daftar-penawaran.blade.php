@@ -8,7 +8,7 @@
             <div class="card-header">
                 <h3 class="card-title">Daftar Penawaran</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: 0;">
                 <!-- Search Form and Delete Button -->
                 <div class="mb-3 d-flex justify-content-between align-items-center">
                     <form method="GET" action="{{ route('sales.daftar-penawaran') }}" class="d-flex">
@@ -82,9 +82,9 @@
                                                         <td>{{ $quotation->nama_customer }}</td>
                                                         <td>
                                                             @if($quotation->status === 'selesai')
-                                                                <span class="badge bg-success me-1"></span>Selesai
+                                                                <span class="badge bg-success me-1 text-white">Selesai</span>
                                                             @else
-                                                                <span class="badge bg-warning me-1"></span>Proses
+                                                                <span class="badge bg-warning me-1 text-white">Proses</span>
                                                             @endif
                                                         </td>
                                                         <td>
@@ -320,13 +320,13 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="detailModalLabel-{{ $quotation->id }}">Detail Penawaran - {{ $quotation->nama_customer }}</h5>
+                <h5 class="modal-title" id="detailModalLabel-{{ $quotation->id }}">Detail Penawaran</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Sales Person:</strong> {{ $quotation->sales_person }}
+                        <strong>Nama Customer:</strong> {{ $quotation->nama_customer }}
                     </div>
                     <div class="col-md-6">
                         <strong>Jenis Penawaran:</strong> {{ $quotation->jenis_penawaran }}
@@ -334,14 +334,14 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Format Layout:</strong> {{ $quotation->format_layout }}
+                        <strong>Alamat Customer:</strong> {{ $quotation->alamat_customer }}
                     </div>
                     <div class="col-md-6">
                         <strong>Status:</strong>
                         @if($quotation->status === 'selesai')
-                            <span class="badge bg-success">Selesai</span>
+                            <span class="badge bg-success text-white">Selesai</span>
                         @else
-                            <span class="badge bg-warning">Proses</span>
+                            <span class="badge bg-warning text-white">Proses</span>
                         @endif
                     </div>
                 </div>
@@ -368,7 +368,7 @@
                         <strong>Diskon:</strong> {{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}
                     </div>
                     <div class="col-md-6">
-                        <strong>Alamat Customer:</strong> {{ $quotation->alamat_customer }}
+                        <strong>Format Layout:</strong> {{ $quotation->format_layout }}
                     </div>
                 </div>
 

@@ -36,7 +36,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body"  style="padding: 0;">
                     @if(session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}

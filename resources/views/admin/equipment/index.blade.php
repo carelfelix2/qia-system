@@ -42,7 +42,7 @@
 
 
                     <div class="table-responsive draggable-table">
-                        <table class="table table-vcenter table-mobile-md card-table">
+                        <table class="table table-vcenter table-mobile-md card-table table-hover">
                             <thead>
                                 <tr>
                                     <th>Nama Alat</th>
@@ -80,8 +80,16 @@
                             </tbody>
                         </table>
                     </div>
-
-                    {{ $equipment->links() }}
+                </div>
+                <div class="card-footer">
+                    <div class="row g-2 justify-content-center justify-content-sm-between">
+                        <div class="col-auto d-flex align-items-center">
+                            <p class="m-0 text-secondary">Showing <strong>{{ $equipment->firstItem() ?? 0 }} to {{ $equipment->lastItem() ?? 0 }}</strong> of <strong>{{ $equipment->total() }} entries</strong></p>
+                        </div>
+                        <div class="col-auto">
+                            {{ $equipment->links() }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

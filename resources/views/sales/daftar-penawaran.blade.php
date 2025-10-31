@@ -47,14 +47,14 @@
                                         </div>
                                     @else
                                         <div class="table-responsive draggable-table">
-                                            <table class="table table-vcenter">
+                                            <table class="table table-vcenter table-hover">
                                                 <thead>
                                                     <tr>
                                                         <th>
                                                             <input type="checkbox" id="select-all-checkbox" class="form-check-input">
                                                         </th>
-                                                        <th>No</th>
                                                         <th>Tanggal</th>
+                                                        <th>No SAP</th>
                                                         <th>Sales Person</th>
                                                         <th>Jenis Penawaran</th>
                                                         <th>Nama Customer</th>
@@ -62,7 +62,6 @@
                                                         <th>Pembayaran</th>
                                                         <th>Stok Barang</th>
                                                         <th>Status</th>
-                                                        <th>No SAP</th>
                                                         <th>Lampiran</th>
                                                         <th>Aksi</th>
                                                     </tr>
@@ -75,8 +74,14 @@
                                                                 <input type="checkbox" class="quotation-checkbox form-check-input" value="{{ $quotation->id }}">
                                                             @endif
                                                         </td>
-                                                        <td>{{ $index + 1 }}</td>
                                                         <td>{{ $quotation->created_at->format('d/m/Y H:i') }}</td>
+                                                        <td>
+                                                            @if($quotation->sap_number)
+                                                                {{ $quotation->sap_number }}
+                                                            @else
+                                                                <span class="text-muted">-</span>
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $quotation->sales_person }}</td>
                                                         <td>{{ $quotation->jenis_penawaran }}</td>
                                                         <td>{{ $quotation->nama_customer }}</td>
@@ -108,13 +113,6 @@
                                                                 <span class="badge bg-success me-1"></span>Selesai
                                                             @else
                                                                 <span class="badge bg-warning me-1"></span>Proses
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @if($quotation->sap_number)
-                                                                {{ $quotation->sap_number }}
-                                                            @else
-                                                                <span class="text-muted">-</span>
                                                             @endif
                                                         </td>
                                                         <td>
@@ -303,30 +301,38 @@
                                 <button type="button" id="edit_add_equipment_btn" class="btn btn-secondary w-100">Add Equipment</button>
                             </div>
                         </div>
-                        <div class="row" id="edit_equipment_form" style="display: none;">
-                            <div class="col-md-2">
-                                <input type="text" id="edit_nama_alat_input" class="form-control" placeholder="Nama Alat">
+                        <!-- Manual Input Equipment Section -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">Manual Input Equipment</h6>
                             </div>
-                            <div class="col-md-2">
-                                <input type="text" id="edit_tipe_alat_input" class="form-control" placeholder="Tipe Alat">
-                            </div>
-                            <div class="col-md-2">
-                                <input type="text" id="edit_merk_input" class="form-control" placeholder="Merk">
-                            </div>
-                            <div class="col-md-2">
-                                <input type="text" id="edit_part_number_input" class="form-control" placeholder="Part Number Alat">
-                            </div>
-                            <div class="col-md-2">
-                                <select id="edit_kategori_harga_input" class="form-select">
-                                    <option value="">Kategori Harga</option>
-                                    <option value="harga_retail">Harga Retail</option>
-                                    <option value="harga_inaproc">Harga Inaproc</option>
-                                    <option value="harga_sebelum_ppn">Harga Sebelum PPN</option>
-                                    <option value="manual">Manual</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <input type="number" id="edit_harga_input" class="form-control" placeholder="Harga" step="0.01" min="0">
+                            <div class="card-body">
+                                <div class="row" id="edit_equipment_form" style="display: flex;">
+                                    <div class="col-md-2">
+                                        <input type="text" id="edit_nama_alat_input" class="form-control" placeholder="Nama Alat">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" id="edit_tipe_alat_input" class="form-control" placeholder="Tipe Alat">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" id="edit_merk_input" class="form-control" placeholder="Merk">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" id="edit_part_number_input" class="form-control" placeholder="Part Number Alat">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select id="edit_kategori_harga_input" class="form-select">
+                                            <option value="">Kategori Harga</option>
+                                            <option value="harga_retail">Harga Retail</option>
+                                            <option value="harga_inaproc">Harga Inaproc</option>
+                                            <option value="harga_sebelum_ppn">Harga Sebelum PPN</option>
+                                            <option value="manual">Manual</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="number" id="edit_harga_input" class="form-control" placeholder="Harga" step="0.01" min="0">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -739,7 +745,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('edit_part_number_input').value = '';
         document.getElementById('edit_kategori_harga_input').value = '';
         document.getElementById('edit_harga_input').value = '';
-        document.getElementById('edit_equipment_form').style.display = 'none';
+        // No need to hide the form anymore since it's always visible
     });
 
     // Event delegation for edit remove buttons

@@ -314,23 +314,36 @@ class SalesController extends Controller
 
     public function daftarPo(Request $request)
     {
-        $query = Quotation::with('quotationItems', 'poFiles.uploader')
-            ->where('created_by', auth()->id())
-            ->where('status', 'selesai')
-            ->whereHas('poFiles'); // Only show quotations that have PO files
+        // Get latest PO file per quotation, only for quotations created by the current user
+        $poFiles = \App\Models\POFile::with('quotation', 'uploader')
+            ->whereIn('id', function($sub) {
+                $sub->select(\DB::raw('MAX(id)'))
+                    ->from('po_files')
+                    ->groupBy('quotation_id');
+            })
+            ->whereHas('quotation', function($q) {
+                $q->where('created_by', auth()->id())
+                  ->where('status', 'selesai');
+            })
+            ->whereHas('quotation') // Ensure quotation exists
+            ->orderBy('created_at', 'desc');
 
         // Search functionality
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('nama_customer', 'like', '%' . $search . '%')
-                  ->orWhere('sales_person', 'like', '%' . $search . '%')
-                  ->orWhere('jenis_penawaran', 'like', '%' . $search . '%')
-                  ->orWhere('sap_number', 'like', '%' . $search . '%');
+            $poFiles->where(function ($q) use ($search) {
+                $q->whereHas('quotation', function ($subQ) use ($search) {
+                    $subQ->where('nama_customer', 'like', '%' . $search . '%')
+                         ->orWhere('sap_number', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('uploader', function ($subQ) use ($search) {
+                    $subQ->where('name', 'like', '%' . $search . '%');
+                });
             });
         }
 
-        $quotations = $query->latest()->get();
-        return view('sales.daftar-po', compact('quotations'));
+        $poFiles = $poFiles->paginate(15);
+
+        return view('sales.daftar-po', compact('poFiles'));
     }
 }

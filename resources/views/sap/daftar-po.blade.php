@@ -89,8 +89,15 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="d-flex justify-content-center mt-3">
-                        {{ $poFiles->appends(request()->query())->links() }}
+                    <div class="card-footer">
+                        <div class="row g-2 justify-content-center justify-content-sm-between">
+                            <div class="col-auto d-flex align-items-center">
+                                <p class="m-0 text-secondary">Showing <strong>{{ $poFiles->firstItem() ?? 0 }} to {{ $poFiles->lastItem() ?? 0 }}</strong> of <strong>{{ $poFiles->total() }} entries</strong></p>
+                            </div>
+                            <div class="col-auto">
+                                {{ $poFiles->appends(request()->query())->links() }}
+                            </div>
+                        </div>
                     </div>
                 @endif
             </div>

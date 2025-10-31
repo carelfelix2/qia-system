@@ -10,9 +10,9 @@
             </div>
             <div class="card-body">
                 <!-- Search Form -->
-                <div class="mb-3">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
                     <form method="GET" action="{{ route('sales.daftar-po') }}" class="d-flex">
-                        <input type="text" name="search" class="form-control me-2" placeholder="Cari berdasarkan nama customer, sales person, jenis penawaran, atau no SAP..." value="{{ request('search') }}">
+                        <input type="text" name="search" class="form-control me-2" placeholder="Cari berdasarkan nama customer, SAP number, atau uploader..." value="{{ request('search') }}">
                         <button type="submit" class="btn btn-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -27,9 +27,9 @@
                     </form>
                 </div>
 
-                @if($quotations->isEmpty())
+                @if($poFiles->isEmpty())
                     <div class="text-center py-4">
-                        <p class="text-muted">Belum ada PO yang diupload.</p>
+                        <p class="text-muted">Belum ada file PO yang diupload.</p>
                     </div>
                 @else
                     <div class="table-responsive draggable-table">
@@ -37,115 +37,67 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Tanggal</th>
-                                    <th>Sales Person</th>
-                                    <th>Jenis Penawaran</th>
-                                    <th>Nama Customer</th>
-                                    <th>No SAP</th>
-                                    <th>File PO</th>
-                                    <th>Items</th>
-                                    <th>Keterangan Tambahan</th>
+                                    <th>Quotation Number</th>
+                                    <th>Customer Name</th>
+                                    <th>Uploaded By</th>
+                                    <th>File</th>
+                                    <th>Uploaded At</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($quotations as $index => $quotation)
+                                @foreach($poFiles as $index => $poFile)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $quotation->created_at->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $quotation->sales_person }}</td>
-                                    <td>{{ $quotation->jenis_penawaran }}</td>
-                                    <td>{{ $quotation->nama_customer }}</td>
+                                    <td>{{ $poFiles->firstItem() + $index }}</td>
                                     <td>
-                                        @if($quotation->sap_number)
-                                            {{ $quotation->sap_number }}
+                                        @if($poFile->quotation->sap_number)
+                                            {{ $poFile->quotation->sap_number }}
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
+                                    <td>{{ $poFile->quotation->nama_customer }}</td>
+                                    <td>{{ $poFile->uploader->name }}</td>
                                     <td>
-                                        @if($quotation->poFiles->count() > 0)
-                                            @foreach($quotation->poFiles as $poFile)
-                                            <div class="d-flex align-items-center mb-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-2 text-primary" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                                                    <line x1="9" y1="9" x2="10" y2="9" />
-                                                    <line x1="9" y1="13" x2="15" y2="13" />
-                                                    <line x1="9" y1="17" x2="15" y2="17" />
-                                                </svg>
-                                                <div>
-                                                    <a href="{{ Storage::url($poFile->file_path) }}" target="_blank" class="text-decoration-none">
-                                                        {{ basename($poFile->file_path) }}
-                                                    </a>
-                                                    <br>
-                                                    <small class="text-muted">Uploaded by {{ $poFile->uploader->name }} on {{ $poFile->created_at->format('d/m/Y H:i') }}</small>
-                                                </div>
-                                            </div>
-                                            @endforeach
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
+                                        <a href="{{ Storage::url($poFile->file_path) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                <line x1="9" y1="9" x2="10" y2="9" />
+                                                <line x1="9" y1="13" x2="15" y2="13" />
+                                                <line x1="9" y1="17" x2="15" y2="17" />
+                                            </svg>
+                                            Download
+                                        </a>
                                     </td>
+                                    <td>{{ $poFile->created_at->format('d/m/Y H:i') }}</td>
                                     <td>
-                                        @if($quotation->quotationItems->count() > 0)
-                                            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#items-{{ $quotation->id }}" aria-expanded="false" aria-controls="items-{{ $quotation->id }}">
-                                                Tampilkan Alat ({{ $quotation->quotationItems->count() }})
-                                            </button>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($quotation->keterangan_tambahan)
-                                            {{ $quotation->keterangan_tambahan }}
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="9" class="p-0">
-                                        <div class="collapse" id="items-{{ $quotation->id }}">
-                                            <div class="card card-body border-0">
-                                                <h6>Daftar Alat:</h6>
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm table-daftar-alat">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Nama Alat</th>
-                                                                <th>Tipe Alat</th>
-                                                                <th>Merk</th>
-                                                                <th>Part Number</th>
-                                                                <th>Kategori Harga</th>
-                                                                <th>Harga</th>
-                                                                <th>Diskon</th>
-                                                                <th>PPN</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach($quotation->quotationItems as $item)
-                                                            <tr>
-                                                                <td>{{ $item->nama_alat }}</td>
-                                                                <td>{{ $item->tipe_alat }}</td>
-                                                                <td>{{ $item->merk }}</td>
-                                                                <td>{{ $item->part_number }}</td>
-                                                                <td>{{ $item->kategori_harga }}</td>
-                                                                <td>Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                                                                <td>{{ $quotation->diskon ? $quotation->diskon . '%' : '-' }}</td>
-                                                                <td>{{ $item->ppn }}</td>
-                                                            </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <a href="{{ route('sap.quotation.show', $poFile->quotation) }}" class="btn btn-sm btn-outline-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <circle cx="12" cy="12" r="2" />
+                                                <path d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7" />
+                                            </svg>
+                                            View Quotation
+                                        </a>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="card-footer">
+                        <div class="row g-2 justify-content-center justify-content-sm-between">
+                            <div class="col-auto d-flex align-items-center">
+                                <p class="m-0 text-secondary">Showing <strong>{{ $poFiles->firstItem() ?? 0 }} to {{ $poFiles->lastItem() ?? 0 }}</strong> of <strong>{{ $poFiles->total() }} entries</strong></p>
+                            </div>
+                            <div class="col-auto">
+                                {{ $poFiles->appends(request()->query())->links() }}
+                            </div>
+                        </div>
                     </div>
                 @endif
             </div>

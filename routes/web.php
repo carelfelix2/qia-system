@@ -76,8 +76,11 @@ Route::middleware(['auth', 'role:inputer_sap|inputer_spk'])->group(function () {
     Route::get('/sap/daftar-penawaran', [App\Http\Controllers\SapController::class, 'quotations'])->name('sap.daftar-penawaran');
     Route::get('/sap/log-perubahan', [App\Http\Controllers\SapController::class, 'revisionLog'])->name('sap.log-perubahan');
     Route::get('/sap/daftar-po', [App\Http\Controllers\SapController::class, 'daftarPo'])->name('sap.daftar-po');
-    Route::get('/sap/quotation/{quotation}', [App\Http\Controllers\SapController::class, 'show'])->name('sap.quotation.show');
     Route::post('/sap/quotation/{quotation}/update-sap', [App\Http\Controllers\SapController::class, 'updateSapNumber'])->name('sap.update-sap-number');
+});
+
+Route::middleware(['auth', 'role:inputer_sap|inputer_spk|sales'])->group(function () {
+    Route::get('/sap/quotation/{quotation}', [App\Http\Controllers\SapController::class, 'show'])->name('sap.quotation.show');
 });
 
 // Purchase Orders routes - accessible by admin and inputer_sap

@@ -29,10 +29,9 @@
                     </div>
                 @else
                     <div class="table-responsive draggable-table">
-                        <table class="table table-vcenter">
+                        <table class="table table-vcenter table-hover">
                             <thead>
                                                 <tr>
-                                    <th>No</th>
                                     <th>
                                         Tanggal
                                         <a href="{{ request()->fullUrlWithQuery(['sort' => request('sort') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none ms-1">
@@ -42,21 +41,27 @@
                                             </svg>
                                         </a>
                                     </th>
+                                    <th>No SAP</th>
                                     <th>Sales Person</th>
                                     <th>Jenis Penawaran</th>
                                     <th>Format Layout</th>
                                     <th>Nama Customer</th>
                                     <th>Items</th>
                                     <th>Status</th>
-                                    <th>No SAP</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($quotations as $index => $quotation)
                                 <tr>
-                                    <td>{{ $quotations->firstItem() + $index }}</td>
                                     <td>{{ $quotation->created_at->format('d/m/Y H:i') }}</td>
+                                    <td>
+                                        @if($quotation->sap_number)
+                                            {{ $quotation->sap_number }}
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $quotation->sales_person }}</td>
                                     <td>{{ $quotation->jenis_penawaran }}</td>
                                     <td>{{ $quotation->format_layout }}</td>
@@ -74,13 +79,6 @@
                                         <span class="badge {{ $quotation->status === 'selesai' ? 'bg-success' : 'bg-warning' }}">
                                             {{ ucfirst($quotation->status) }}
                                         </span>
-                                    </td>
-                                    <td>
-                                        @if($quotation->sap_number)
-                                            {{ $quotation->sap_number }}
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal-{{ $quotation->id }}">
@@ -214,8 +212,15 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="d-flex justify-content-center mt-3">
-                        {{ $quotations->appends(request()->query())->links() }}
+                    <div class="card-footer">
+                        <div class="row g-2 justify-content-center justify-content-sm-between">
+                            <div class="col-auto d-flex align-items-center">
+                                <p class="m-0 text-secondary">Showing <strong>{{ $quotations->firstItem() ?? 0 }} to {{ $quotations->lastItem() ?? 0 }}</strong> of <strong>{{ $quotations->total() }} entries</strong></p>
+                            </div>
+                            <div class="col-auto">
+                                {{ $quotations->appends(request()->query())->links() }}
+                            </div>
+                        </div>
                     </div>
                 @endif
             </div>

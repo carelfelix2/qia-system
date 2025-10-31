@@ -60,6 +60,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Equipment Details</label>
+
+                                            <!-- Search Equipment Section -->
                                             <div class="row mb-3">
                                                 <div class="col-md-4">
                                                     <input type="text" id="equipment_search" class="form-control" placeholder="Search equipment...">
@@ -69,36 +71,45 @@
                                                     <button type="button" id="add_equipment_btn" class="btn btn-secondary w-100">Add Equipment</button>
                                                 </div>
                                             </div>
-                                            <div class="row" id="equipment_form" style="display: none;">
-                                                <div class="col-md-2">
-                                                    <input type="text" id="nama_alat_input" class="form-control" placeholder="Nama Alat">
+
+                                            <!-- Manual Input Equipment Section -->
+                                            <div class="card mb-3">
+                                                <div class="card-header">
+                                                    <h6 class="card-title mb-0">Manual Input Equipment</h6>
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" id="tipe_alat_input" class="form-control" placeholder="Tipe Alat">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" id="merk_input" class="form-control" placeholder="Merk">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" id="part_number_input" class="form-control" placeholder="Part Number Alat">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <select id="kategori_harga_input" class="form-select">
-                                                        <option value="">Kategori Harga</option>
-                                                        <option value="harga_retail">Harga Retail</option>
-                                                        <option value="harga_inaproc">Harga Inaproc</option>
-                                                        <option value="harga_sebelum_ppn">Harga Sebelum PPN</option>
-                                                        <option value="manual">Manual</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="number" id="harga_input" class="form-control" placeholder="Harga" step="0.01" min="0">
+                                                <div class="card-body">
+                                                    <div class="row" id="equipment_form">
+                                                        <div class="col-md-2">
+                                                            <input type="text" id="nama_alat_input" class="form-control" placeholder="Nama Alat">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="text" id="tipe_alat_input" class="form-control" placeholder="Tipe Alat">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="text" id="merk_input" class="form-control" placeholder="Merk">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="text" id="part_number_input" class="form-control" placeholder="Part Number Alat">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <select id="kategori_harga_input" class="form-select">
+                                                                <option value="">Kategori Harga</option>
+                                                                <option value="harga_retail">Harga Retail</option>
+                                                                <option value="harga_inaproc">Harga Inaproc</option>
+                                                                <option value="harga_sebelum_ppn">Harga Sebelum PPN</option>
+                                                                <option value="manual">Manual</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" id="harga_input" class="form-control" placeholder="Harga" step="0.01" min="0">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <div class="table-responsive draggable-table">
-                                            <table class="table table-bordered" id="equipment_table">
+                                            <table class="table table-bordered table-hover" id="equipment_table">
                                                 <thead>
                                                     <tr>
                                                         <th>Nama Alat</th>
@@ -285,7 +296,6 @@
             document.getElementById('part_number_input').value = '';
             document.getElementById('kategori_harga_input').value = '';
             document.getElementById('harga_input').value = '';
-            document.getElementById('equipment_form').style.display = 'none';
 
             equipmentIndex++;
         });

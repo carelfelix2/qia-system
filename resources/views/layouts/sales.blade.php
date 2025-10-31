@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @if(session('success'))
+        <meta name="success-message" content="{{ session('success') }}">
+    @endif
+    @if(session('error'))
+        <meta name="error-message" content="{{ session('error') }}">
+    @endif
+    @if(session('warning'))
+        <meta name="warning-message" content="{{ session('warning') }}">
+    @endif
+    @if(session('info'))
+        <meta name="info-message" content="{{ session('info') }}">
+    @endif
     <title>@yield('title', 'Sales Dashboard')</title>
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     @vite('resources/css/tabler.css')
@@ -156,6 +168,7 @@
           </div>
         </footer>
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    @vite('resources/js/app.js')
     @yield('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -37,7 +37,7 @@
                 @endif
 
                 <div class="table-responsive draggable-table">
-                    <table class="table table-vcenter">
+                    <table class="table table-vcenter table-hover">
                         <thead>
                             <tr>
                                 <th>Tanggal</th>
@@ -160,9 +160,15 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div class="mt-4">
-                    {{ $users->links() }}
+            </div>
+            <div class="card-footer">
+                <div class="row g-2 justify-content-center justify-content-sm-between">
+                    <div class="col-auto d-flex align-items-center">
+                        <p class="m-0 text-secondary">Showing <strong>{{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }}</strong> of <strong>{{ $users->total() }} entries</strong></p>
+                    </div>
+                    <div class="col-auto">
+                        {{ $users->links() }}
+                    </div>
                 </div>
             </div>
         </div>

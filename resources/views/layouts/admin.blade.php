@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @if(session('success'))
+        <meta name="success-message" content="{{ session('success') }}">
+    @endif
+    @if(session('error'))
+        <meta name="error-message" content="{{ session('error') }}">
+    @endif
+    @if(session('warning'))
+        <meta name="warning-message" content="{{ session('warning') }}">
+    @endif
+    @if(session('info'))
+        <meta name="info-message" content="{{ session('info') }}">
+    @endif
     <title>@yield('title', 'Admin Dashboard')</title>
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     @vite('resources/css/tabler.css')
@@ -122,15 +135,14 @@
             <div class="row text-center align-items-center flex-row-reverse">
               <div class="col-lg-auto ms-lg-auto">
                 <ul class="list-inline list-inline-dots mb-0">
-                  <li class="list-inline-item"><a href="/" target="_blank" class="link-secondary" rel="noopener">Documentation</a></li>
-                  <li class="list-inline-item"><a href="/" class="link-secondary">License</a></li>
                   <li class="list-inline-item">
-                    <a href="https://github.com/carelfelix2" target="_blank" class="link-secondary" rel="noopener">
+                    <a>
                       <!-- Download SVG icon from http://tabler.io/icons/icon/heart -->
                        Made with
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon text-pink icon-inline icon-4">
                         <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
                       </svg>
+                      by  <a href="https://github.com/carelfelix2" target="_blank" class="link-secondary" rel="noopener">Carel</a>
                     </a>
                   </li>
                 </ul>
@@ -147,6 +159,7 @@
           </div>
         </footer>
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    @vite('resources/js/app.js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const darkModeToggle = document.getElementById('dark-mode-toggle');
